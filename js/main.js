@@ -1,80 +1,99 @@
+// Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
-
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAouJWrr6MA60Lfp_3jZaLfRgsWFpunddo",
-  authDomain: "somalielection2026-2086f.firebaseapp.com",
-  databaseURL: "https://somalielection2026-2086f-default-rtdb.firebaseio.com",
-  projectId: "somalielection2026-2086f",
-  storageBucket: "somalielection2026-2086f.appspot.com",
-  messagingSenderId: "118367125204",
-  appId: "1:118367125204:web:683ff14c39fb1d18488541",
-  measurementId: "G-LXDNTMSVP1"
-};
+import { getDatabase, ref, set, get, update, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+import { firebaseConfig } from './config.js';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Display user info if exists
-const user = JSON.parse(localStorage.getItem("currentUser"));
-if (user) {
-  if (document.getElementById("displayName")) document.getElementById("displayName").textContent = user.name;
-  if (document.getElementById("displayRegion")) document.getElementById("displayRegion").textContent = user.region;
-  if (document.getElementById("displayDistrict")) document.getElementById("displayDistrict").textContent = user.district;
-}
+// Global user object
+let currentUser = {};
 
-// Voting Variables
-let selectedCandidate = "";
+// Handle login
+document.querySelector("button").addEventListener("click", () => {
+  const name = document.getElementById("name").value.trim();
+  const gender = document.getElementById("gender").value;
+  const region = document.getElementById("region").value.trim();
+  const district = document.getElementById("district").value.trim();
 
-window.selectCandidate = (candidate) => {
-  selectedCandidate = candidate;
-  document.getElementById("selectedCandidateName").textContent = getCandidateFullName(candidate);
-  document.getElementById("confirmation").classList.remove("hidden");
-};
-
-window.cancelVote = () => {
-  selectedCandidate = "";
-  document.getElementById("confirmation").classList.add("hidden");
-};
-
-window.submitVote = async () => {
-  if (!user || !selectedCandidate) {
-    alert("Error: No user or no candidate selected.");
+  if (!name || !gender || !region || !district) {
+    alert("Fadlan buuxi dhammaan meelaha banaan.");
     return;
   }
 
-  // Update user has voted
-  const userRef = ref(db, "voters/" + user.name.replace(/\s+/g, "_"));
-  await update(userRef, {
-    ...user,
-    hasVoted: true,
-    votedFor: selectedCandidate
-  });
+  currentUser = {
+    name,
+    gender,
+    region,
+    district,
+    hasVoted: false
+  };
 
-  // Update vote count
-  const candidateRef = ref(db, "votes/" + selectedCandidate);
-  const snapshot = await get(candidateRef);
-  const currentVotes = snapshot.exists() ? snapshot.val() : 0;
-  await set(candidateRef, currentVotes + 1);
+  localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  window.location.href = "vote.html";
+});
 
-  // Local update
-  user.hasVoted = true;
-  localStorage.setItem("currentUser", JSON.stringify(user));
+// Display user info on vote page
+if (window.location.pathname.includes("vote.html")) {
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  if (!user) window.location.href = "index.html";
 
-  alert(`✅ You voted for ${getCandidateFullName(selectedCandidate)} successfully!`);
+  currentUser = user;
+  document.getElementById("displayName").textContent = user.name;
+  document.getElementById("displayRegion").textContent = user.region;
+  document.getElementById("displayDistrict").textContent = user.district;
+}
+
+// Voting logic
+let selectedCandidate = "";
+
+window.selectCandidate = function (candidate) {
+  selectedCandidate = candidate;
+  document.getElementById("selectedCandidateName").textContent = candidate.replace("_", " ");
+  document.getElementById("confirmation").classList.remove("hidden");
+};
+
+window.cancelVote = function () {
+  document.getElementById("confirmation").classList.add("hidden");
+  selectedCandidate = "";
+};
+
+window.submitVote = async function () {
+  if (!selectedCandidate) return;
+
+  const voteRef = ref(db, 'votes/' + selectedCandidate);
+  const snapshot = await get(voteRef);
+
+  let newCount = 1;
+  if (snapshot.exists()) {
+    newCount = snapshot.val() + 1;
+  }
+
+  await set(voteRef, newCount);
+
+  // Save that the user has voted
+  currentUser.hasVoted = true;
+  localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+  // Optional: Save full user under /voters
+  const voterId = Date.now();
+  await set(ref(db, 'voters/' + voterId), currentUser);
+
+  alert("Codkaagii waad dhiibatay. Mahadsanid!");
   window.location.href = "results.html";
 };
 
-function getCandidateFullName(shortName) {
-  const names = {
-    "Farmaajo": "Mohamed Abdullahi Farmaajo",
-    "Hassan": "Hassan Sheikh Mohamud",
-    "Khaire": "Hassan Ali Khaire",
-    "Roble": "Mohamed Hussein Roble",
-    "Sharif": "Sharif Sheikh Ahmed",
-    "Shirdon": "Abdi Farah Shirdon"
-  };
-  return names[shortName] || shortName;
+// Results logic
+if (window.location.pathname.includes("results.html")) {
+  const candidates = ["Farmaajo", "Hassan", "Khaire", "Roble", "Sharif", "Shirdon"];
+
+  candidates.forEach(async (name) => {
+    const voteRef = ref(db, 'votes/' + name);
+    const snapshot = await get(voteRef);
+    const count = snapshot.exists() ? snapshot.val() : 0;
+
+    document.getElementById(name + "Count").textContent = count;
+    document.getElementById(name + "Bar").style.width = (count * 20) + "%";
+  });
 }
