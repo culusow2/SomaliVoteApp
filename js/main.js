@@ -1,103 +1,62 @@
-// main.js
-import { database } from './config.js';
-import { ref, set, get, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { getDatabase, ref, set, push, get, child, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { app } from './config.js';
 
-// --- Handle Login Page (index.html)
-const submitButton = document.getElementById("submitBtn");
-if (submitButton) {
-  submitButton.addEventListener("click", () => {
-    const name = document.getElementById("name").value.trim();
-    const gender = document.getElementById("gender").value;
-    const region = document.getElementById("region").value.trim();
-    const district = document.getElementById("district").value.trim();
+const db = getDatabase(app);
 
-    if (!name || !gender || !region || !district) {
-      alert("Fadlan buuxi dhammaan meelaha!");
-      return;
-    }
+// Retrieve current user from localStorage
+const user = JSON.parse(localStorage.getItem("currentUser"));
+if (user) {
+  document.getElementById("displayName").textContent = user.name;
+  document.getElementById("displayRegion").textContent = user.region;
+  document.getElementById("displayDistrict").textContent = user.district;
+}
 
-    const user = {
-      name,
-      gender,
-      region,
-      district,
-      hasVoted: false
-    };
+// Candidate Selection
+let selectedCandidate = "";
+function selectCandidate(name) {
+  selectedCandidate = name;
+  document.getElementById("selectedCandidateName").textContent = getCandidateFullName(name);
+  document.getElementById("confirmation").classList.remove("hidden");
+}
 
-    localStorage.setItem("currentUser", JSON.stringify(user));
+window.selectCandidate = selectCandidate;
 
-    set(ref(database, "voters/" + name.replace(/\s+/g, "_")), user)
-      .then(() => {
-        window.location.href = "vote.html";
-      })
-      .catch((error) => {
-        console.error("Error writing to database:", error);
-        alert("Error saving info.");
-      });
+function cancelVote() {
+  selectedCandidate = "";
+  document.getElementById("confirmation").classList.add("hidden");
+}
+
+window.cancelVote = cancelVote;
+
+function submitVote() {
+  if (!user || !selectedCandidate) return;
+
+  const userRef = ref(db, "voters/" + user.name.replace(/\s+/g, "_"));
+
+  update(userRef, {
+    hasVoted: true,
+    vote: selectedCandidate
+  });
+
+  const voteCountRef = ref(db, "votes/" + selectedCandidate);
+  get(voteCountRef).then((snapshot) => {
+    const currentVotes = snapshot.exists() ? snapshot.val() : 0;
+    set(voteCountRef, currentVotes + 1);
+    alert("✅ Your vote for " + getCandidateFullName(selectedCandidate) + " has been submitted!");
+    document.getElementById("confirmation").classList.add("hidden");
   });
 }
 
-// --- Handle Voting Page (vote.html)
-let selectedCandidate = null;
+window.submitVote = submitVote;
 
-window.selectCandidate = (candidate) => {
-  selectedCandidate = candidate;
-  document.getElementById("selectedCandidateName").textContent = getCandidateFullName(candidate);
-  document.getElementById("confirmation").classList.remove("hidden");
-};
-
-window.cancelVote = () => {
-  selectedCandidate = null;
-  document.getElementById("confirmation").classList.add("hidden");
-};
-
-function getCandidateFullName(shortName) {
-  const map = {
-    "Farmaajo": "Mohamed Abdullahi Farmaajo",
-    "Hassan": "Hassan Sheikh Mohamud",
-    "Khaire": "Hassan Ali Khaire",
-    "Roble": "Mohamed Hussein Roble",
-    "Sharif": "Sharif Sheikh Ahmed",
-    "Shirdon": "Abdi Farah Shirdon"
-  };
-  return map[shortName] || shortName;
+function getCandidateFullName(short) {
+  switch (short) {
+    case "Farmaajo": return "Mohamed Abdullahi Farmaajo";
+    case "Hassan": return "Hassan Sheikh Mohamud";
+    case "Khaire": return "Hassan Ali Khaire";
+    case "Roble": return "Mohamed Hussein Roble";
+    case "Sharif": return "Sharif Sheikh Ahmed";
+    case "Shirdon": return "Abdi Farah Shirdon";
+    default: return short;
+  }
 }
-
-window.submitVote = async () => {
-  if (!selectedCandidate) return;
-
-  const user = JSON.parse(localStorage.getItem("currentUser"));
-  if (user.hasVoted) {
-    alert("You have already voted!");
-    return;
-  }
-
-  const candidateRef = ref(database, "votes/" + selectedCandidate);
-  const snapshot = await get(candidateRef);
-  const currentVotes = snapshot.exists() ? snapshot.val() : 0;
-
-  await set(candidateRef, currentVotes + 1);
-
-  // Update the user hasVoted = true
-  const userRef = ref(database, "voters/" + user.name.replace(/\s+/g, "_"));
-  await update(userRef, { hasVoted: true });
-
-  user.hasVoted = true;
-  localStorage.setItem("currentUser", JSON.stringify(user));
-
-  window.location.href = "results.html"; // Redirect after voting
-};
-
-// --- Load User Info on Vote Page
-document.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem("currentUser"));
-  if (user) {
-    const nameEl = document.getElementById("displayName");
-    const districtEl = document.getElementById("displayDistrict");
-    const regionEl = document.getElementById("displayRegion");
-
-    if (nameEl) nameEl.textContent = user.name;
-    if (districtEl) districtEl.textContent = user.district;
-    if (regionEl) regionEl.textContent = user.region;
-  }
-});
