@@ -55,8 +55,10 @@ function getCandidateFullName(shortName) {
   const map = {
     "Farmaajo": "Mohamed Abdullahi Farmaajo",
     "Hassan": "Hassan Sheikh Mohamud",
-    "Khaire": "Hassan Ali Khaire"
-    // Add more if needed
+    "Khaire": "Hassan Ali Khaire",
+    "Roble": "Mohamed Hussein Roble",
+    "Sharif": "Sharif Sheikh Ahmed",
+    "Shirdon": "Abdi Farah Shirdon"
   };
   return map[shortName] || shortName;
 }
