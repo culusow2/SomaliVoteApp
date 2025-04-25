@@ -1,24 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Somali Vote App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
   <div class="container">
     <img src="images/logo.png" alt="Somali Government Logo" class="logo" />
-
-    <h2>🗳️ Doorashada Soomaaliya 2026</h2>
-    <p>Platformka Codbixinta</p>
-
-    <input type="text" id="name" placeholder="Magacaaga oo dhameystiran" />
-    
-    <select id="gender">
-      <option disabled selected>Xulo Jinsiga</option>
-      <option value="Lab">Lab</option>
-      <option value="Dhedig">Dhedig</option>
-    </select>
-
-    <input type="text" id="region" placeholder="Gobolkaaga (tusaale: Banaadir)" />
-    <input type="text" id="district" placeholder="Degmadaada (tusaale: Warta Nabada)" />
-
-    <button onclick="submitLogin()">Geli</button>
+    <h2>🔐 Admin Login</h2>
+    <h3>🗂️ Voters List</h3>
+    <table class="admin-table" id="voterTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Region</th>
+          <th>District</th>
+          <th>Voted</th>
+        </tr>
+      </thead>
+      <tbody id="voterList">
+        <!-- Voters will be listed here dynamically -->
+      </tbody>
+    </table>
   </div>
 
+  <footer class="footer">
+    <p>&copy; 2026 Guddiga Doorashooyinka Qaranka Soomaaliyeed.</p>
+  </footer>
+
   <script type="module" src="js/config.js"></script>
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/admin.js"></script>
 </body>
+</html>
