@@ -2,54 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Vote - Somali Election 2026</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Election</h1>
+    <h1>🗳️ Election</h1>
     <p>Welcome, <span id="displayName"></span></p>
     <p>Region: <span id="displayRegion"></span>, District: <span id="displayDistrict"></span></p>
+
     <h2>Cast Your Vote</h2>
     <p>Select your preferred candidate:</p>
-    
-    <div class="candidates-grid">
-      <div class="candidate-card" onclick="selectCandidate('Farmaajo')">
-        <img src="images/farmaajo.jpg" alt="Farmaajo">
-        <strong>Mohamed Abdullahi Farmaajo</strong>
+
+    <div class="candidates">
+      <div class="candidate" onclick="selectCandidate('Farmaajo')">
+        <img src="images/farmaajo.jpg" alt="Farmaajo" onerror="this.onerror=null; this.src='images/default.jpg';" />
+        <p><strong>Mohamed Abdullahi Farmaajo</strong></p>
       </div>
-      <div class="candidate-card" onclick="selectCandidate('Hassan')">
-        <img src="images/hassan.jpg" alt="Hassan">
-        <strong>Hassan Sheikh Mohamud</strong>
+
+      <div class="candidate" onclick="selectCandidate('Hassan')">
+        <img src="images/hassan.jpg" alt="Hassan Sheikh" onerror="this.onerror=null; this.src='images/default.jpg';" />
+        <p><strong>Hassan Sheikh Mohamud</strong></p>
       </div>
-      <div class="candidate-card" onclick="selectCandidate('Khaire')">
-        <img src="images/khaire.jpg" alt="Khaire">
-        <strong>Hassan Ali Khaire</strong>
+
+      <div class="candidate" onclick="selectCandidate('Khaire')">
+        <img src="images/khaire.jpg" alt="Khaire" onerror="this.onerror=null; this.src='images/default.jpg';" />
+        <p><strong>Hassan Ali Khaire</strong></p>
       </div>
-      <div class="candidate-card" onclick="selectCandidate('Sharif')">
-        <img src="images/sharif.jpg" alt="Sharif">
-        <strong>Sharif Sheikh Ahmed</strong>
+
+      <div class="candidate" onclick="selectCandidate('Sharif')">
+        <img src="images/sharif.jpg" alt="Sharif Sheikh" onerror="this.onerror=null; this.src='images/default.jpg';" />
+        <p><strong>Sharif Sheikh Ahmed</strong></p>
       </div>
-      <div class="candidate-card" onclick="selectCandidate('Roble')">
-        <img src="images/mohamed.jpg" alt="Roble">
-        <strong>Mohamed Hussein Roble</strong>
+
+      <div class="candidate" onclick="selectCandidate('Roble')">
+        <img src="images/roble.jpg" alt="Roble" onerror="this.onerror=null; this.src='images/default.jpg';" />
+        <p><strong>Mohamed Hussein Roble</strong></p>
       </div>
-      <div class="candidate-card" onclick="selectCandidate('Shirdon')">
-        <img src="images/shirdon.jpg" alt="Shirdon">
-        <strong>Abdi Farah Shirdon</strong>
+
+      <div class="candidate" onclick="selectCandidate('Shirdon')">
+        <img src="images/shirdon.jpg" alt="Shirdon" onerror="this.onerror=null; this.src='images/default.jpg';" />
+        <p><strong>Abdi Farah Shirdon</strong></p>
       </div>
     </div>
 
     <div id="confirmation" class="hidden">
-      <p>Are you sure you want to vote for <strong id="selectedCandidateName"></strong>?</p>
-      <div class="confirmation-buttons">
-        <button class="confirm-btn" onclick="submitVote()">Yes</button>
-        <button class="cancel-btn" onclick="cancelVote()">Cancel</button>
-      </div>
+      <p>Confirm your vote for: <strong id="selectedCandidateName"></strong></p>
+      <button onclick="submitVote()">✅ Confirm</button>
+      <button onclick="cancelVote()">❌ Cancel</button>
     </div>
   </div>
 
+  <script type="module" src="js/config.js"></script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
