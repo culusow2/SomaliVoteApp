@@ -1,32 +1,62 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
-import { firebaseConfig } from "./config.js";
+import { getDatabase, ref, set, push, get, child, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { app } from './config.js';
 
-// Init Firebase
-const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Candidate list
-const candidates = ["Farmaajo", "Hassan", "Khaire", "Sharif", "Roble", "Shirdon"];
+// Retrieve current user from localStorage
+const user = JSON.parse(localStorage.getItem("currentUser"));
+if (user) {
+  document.getElementById("displayName").textContent = user.name;
+  document.getElementById("displayRegion").textContent = user.region;
+  document.getElementById("displayDistrict").textContent = user.district;
+}
 
-function updateResults() {
-  const resultsRef = ref(db, "votes/");
-  onValue(resultsRef, (snapshot) => {
-    const votes = snapshot.val() || {};
+// Candidate Selection
+let selectedCandidate = "";
+function selectCandidate(name) {
+  selectedCandidate = name;
+  document.getElementById("selectedCandidateName").textContent = getCandidateFullName(name);
+  document.getElementById("confirmation").classList.remove("hidden");
+}
 
-    let totalVotes = 0;
-    candidates.forEach(candidate => {
-      totalVotes += votes[candidate] || 0;
-    });
+window.selectCandidate = selectCandidate;
 
-    candidates.forEach(candidate => {
-      const count = votes[candidate] || 0;
-      const percent = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
+function cancelVote() {
+  selectedCandidate = "";
+  document.getElementById("confirmation").classList.add("hidden");
+}
 
-      document.getElementById(`${candidate}Count`).textContent = count;
-      document.getElementById(`${candidate}Bar`).style.width = `${percent}%`;
-    });
+window.cancelVote = cancelVote;
+
+function submitVote() {
+  if (!user || !selectedCandidate) return;
+
+  const userRef = ref(db, "voters/" + user.name.replace(/\s+/g, "_"));
+
+  update(userRef, {
+    hasVoted: true,
+    vote: selectedCandidate
+  });
+
+  const voteCountRef = ref(db, "votes/" + selectedCandidate);
+  get(voteCountRef).then((snapshot) => {
+    const currentVotes = snapshot.exists() ? snapshot.val() : 0;
+    set(voteCountRef, currentVotes + 1);
+    alert("✅ Your vote for " + getCandidateFullName(selectedCandidate) + " has been submitted!");
+    document.getElementById("confirmation").classList.add("hidden");
   });
 }
 
-updateResults();
+window.submitVote = submitVote;
+
+function getCandidateFullName(short) {
+  switch (short) {
+    case "Farmaajo": return "Mohamed Abdullahi Farmaajo";
+    case "Hassan": return "Hassan Sheikh Mohamud";
+    case "Khaire": return "Hassan Ali Khaire";
+    case "Roble": return "Mohamed Hussein Roble";
+    case "Sharif": return "Sharif Sheikh Ahmed";
+    case "Shirdon": return "Abdi Farah Shirdon";
+    default: return short;
+  }
+}
