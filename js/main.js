@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { getDatabase, ref, set, get, update, push, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 import { firebaseConfig } from "./config.js";
 
 const app = initializeApp(firebaseConfig);
@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (window.location.pathname.includes("admin.html")) {
-        showVoterList();
+        showAdminVoters();
+        showAdminVotes();
     }
 });
 
@@ -37,8 +38,8 @@ function handleLogin(e) {
     const user = { name, gender, region, district, hasVoted: false };
     localStorage.setItem("currentUser", JSON.stringify(user));
 
-    const votersRef = ref(db, "voters");
-    push(votersRef, user);
+    const usersRef = ref(db, "users");
+    push(usersRef, user);
 
     window.location.href = "vote.html";
 }
@@ -49,9 +50,7 @@ function loadUserInfo() {
 
     document.getElementById("displayName").textContent = user.name;
     document.getElementById("displayDistrict").textContent = user.district;
-
-    const regionEl = document.getElementById("displayRegion");
-    if (regionEl) regionEl.textContent = user.region;
+    document.getElementById("displayRegion").textContent = user.region;
 }
 
 let selectedCandidate = null;
@@ -79,56 +78,72 @@ function getFullName(shortName) {
     return names[shortName] || shortName;
 }
 
-window.submitVote = () => {
+window.submitVote = async () => {
     if (!selectedCandidate) return;
     const user = JSON.parse(localStorage.getItem("currentUser"));
     if (user.hasVoted) return alert("You have already voted!");
 
-    const voteKey = `votes_${selectedCandidate}`;
-    const voteRef = ref(db, voteKey);
+    const voteRef = ref(db, `votes/${selectedCandidate}`);
+    const voteSnapshot = await get(voteRef);
+    const currentVotes = voteSnapshot.exists() ? voteSnapshot.val() : 0;
 
-    // Update Firebase vote count
-    push(voteRef, { timestamp: Date.now() });
+    await set(voteRef, currentVotes + 1);
 
     user.hasVoted = true;
     localStorage.setItem("currentUser", JSON.stringify(user));
-
-    const voterRef = ref(db, "voters");
-    push(voterRef, user);
+    
+    const usersRef = ref(db, "users");
+    push(usersRef, user);
 
     window.location.href = "results.html";
 };
 
 function showResults() {
-    const candidates = ["Farmaajo", "Hassan", "Khaire"];
+    const candidates = ["Farmaajo", "Hassan", "Khaire", "Sharif", "Roble", "Shirdon"];
     candidates.forEach(candidate => {
-        const candidateKey = `votes_${candidate}`;
-        const candidateRef = ref(db, candidateKey);
-        onValue(candidateRef, snapshot => {
-            const voteCount = snapshot.size;
-            document.getElementById(`${candidate.toLowerCase()}Count`).textContent = `${voteCount} votes`;
-            document.getElementById(`${candidate.toLowerCase()}Progress`).style.width = `${Math.min(voteCount * 10, 100)}%`;
+        const candidateRef = ref(db, `votes/${candidate}`);
+        onValue(candidateRef, (snapshot) => {
+            const votes = snapshot.val() || 0;
+            document.getElementById(`${candidate.toLowerCase()}Count`).textContent = votes;
+            const progress = document.getElementById(`${candidate.toLowerCase()}Progress`);
+            if (progress) {
+                progress.style.width = `${Math.min(votes * 10, 100)}%`;
+            }
         });
     });
 }
 
-function showVoterList() {
-    const voterRef = ref(db, "voters");
-    onValue(voterRef, snapshot => {
-        const list = document.getElementById("voterList");
-        list.innerHTML = "";
-
+function showAdminVoters() {
+    const tableBody = document.getElementById("voterTableBody");
+    const usersRef = ref(db, "users");
+    onValue(usersRef, (snapshot) => {
+        tableBody.innerHTML = "";
         snapshot.forEach(child => {
             const user = child.val();
-            const row = document.createElement("tr");
-            row.innerHTML = `
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
                 <td>${user.name}</td>
                 <td>${user.gender}</td>
                 <td>${user.region}</td>
                 <td>${user.district}</td>
                 <td>${user.hasVoted ? "Yes" : "No"}</td>
             `;
-            list.appendChild(row);
+            tableBody.appendChild(tr);
+        });
+    });
+}
+
+function showAdminVotes() {
+    const voteSection = document.getElementById("adminVotes");
+    const candidates = ["Farmaajo", "Hassan", "Khaire", "Sharif", "Roble", "Shirdon"];
+
+    candidates.forEach(candidate => {
+        const candidateRef = ref(db, `votes/${candidate}`);
+        onValue(candidateRef, (snapshot) => {
+            const votes = snapshot.val() || 0;
+            const p = document.createElement("p");
+            p.innerHTML = `<strong>${getFullName(candidate)}:</strong> ${votes} votes`;
+            voteSection.appendChild(p);
         });
     });
 }
