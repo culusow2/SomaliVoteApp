@@ -1,4 +1,4 @@
-/* GENERAL STYLES */
+/* General Styles */
 body {
   font-family: Arial, sans-serif;
   background: #2d5da1;
@@ -8,59 +8,30 @@ body {
 }
 
 .container {
-  max-width: 500px;
+  max-width: 800px;
   background: white;
   color: black;
   margin: 50px auto;
   padding: 20px;
   text-align: center;
   border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
 }
 
-.logo {
-  width: 100px;
-  margin-bottom: 20px;
-}
-
-/* INPUTS + BUTTONS */
-input, select, button {
-  display: block;
-  width: 100%;
-  margin: 10px auto;
-  padding: 12px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-button {
-  background-color: #2d5da1;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-button:hover {
-  background-color: #1d3e73;
-}
-
-/* CANDIDATE GRID */
+/* Candidate Grid */
 .candidates-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  gap: 20px;
   margin-top: 20px;
 }
 
 .candidate-card {
   background-color: #f0f0f0;
-  padding: 10px;
+  padding: 15px;
   border-radius: 8px;
-  width: 160px;
+  width: 180px;
   cursor: pointer;
   text-align: center;
   transition: transform 0.2s ease;
@@ -79,101 +50,13 @@ button:hover {
   margin-bottom: 10px;
 }
 
-/* CONFIRMATION */
-.confirmation-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 15px;
-}
-
-.confirm-btn {
-  background-color: green;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 4px;
-}
-
-.cancel-btn {
-  background-color: red;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 4px;
-}
-
-.hidden {
-  display: none;
-}
-
-/* RESULTS PROGRESS BARS */
-.result-card {
-  margin-bottom: 20px;
-}
-
-.progress-bar {
-  width: 100%;
-  background-color: #ccc;
-  height: 20px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background-color: #2d5da1;
-  width: 0;
-  transition: width 0.5s ease;
-}
-
-/* ADMIN TABLE */
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.admin-table th, .admin-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-}
-
-.admin-table th {
-  background-color: #2d5da1;
-  color: white;
-}
-
-/* FOOTER */
-.footer {
-  text-align: center;
-  margin-top: 40px;
-  color: white;
-}
-
-/* LANGUAGE SELECTOR */
-.language-selector {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.lang-btn {
-  padding: 6px 12px;
-  border: none;
-  background-color: #eee;
-  cursor: pointer;
+.candidate-card p {
   font-weight: bold;
-  border-radius: 4px;
+  font-size: 16px;
+  margin: 5px 0 0;
 }
 
-.lang-btn.active {
-  background-color: #2d5da1;
-  color: white;
-}
-
-/* RESPONSIVE DESIGN */
+/* Responsive Design */
 @media (max-width: 600px) {
   .container {
     width: 90%;
@@ -181,16 +64,17 @@ button:hover {
   }
 
   .candidate-card {
-    width: 90%;
+    width: 100%;
     max-width: 300px;
   }
 
   .candidates-grid {
     flex-direction: column;
-.candidate-card p {
-  font-weight: bold;
-  font-size: 16px;
-  margin: 5px 0 0;
-}
+    align-items: center;
+  }
 
- 
+  .candidate-card img {
+    width: 90px;
+    height: 90px;
+  }
+}
