@@ -1,39 +1,62 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Developer View - Voter Info</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Admin Login - SomaliVoteApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>👨🏽‍💻 Developer - Voter Information</h1>
-        <div id="userInfoSection">
-            <p><strong>Name:</strong> <span id="devName">-</span></p>
-            <p><strong>Gender:</strong> <span id="devGender">-</span></p>
-            <p><strong>Region:</strong> <span id="devRegion">-</span></p>
-            <p><strong>District:</strong> <span id="devDistrict">-</span></p>
-            <p><strong>Has Voted:</strong> <span id="devVoted">-</span></p>
-        </div>
+  <div class="container">
+    <h1>🔐 Admin Login</h1>
+
+    <div id="loginSection">
+      <input type="text" id="adminUser" placeholder="Username" />
+      <input type="password" id="adminPass" placeholder="Password" />
+      <button onclick="checkAdmin()">Login</button>
     </div>
 
-    <div class="footer">
-        <p>Developer Access Only</p>
+    <div id="adminContent" class="hidden">
+      <h2>✅ Welcome, Admin!</h2>
+      <p>Voter info:</p>
+      <p><strong>Name:</strong> <span id="nameData">-</span></p>
+      <p><strong>Gender:</strong> <span id="genderData">-</span></p>
+      <p><strong>Region:</strong> <span id="regionData">-</span></p>
+      <p><strong>District:</strong> <span id="districtData">-</span></p>
+      <p><strong>Voted:</strong> <span id="votedData">-</span></p>
     </div>
+  </div>
 
-    <script>
-    const user = JSON.parse(localStorage.getItem("currentUser"));
+  <script>
+    const validUser = "admin";
+    const validPass = "somalia2026";
 
-    if (!user) {
-      document.getElementById("userInfoSection").innerHTML = "<p>No user data found in localStorage.</p>";
-    } else {
-      document.getElementById("devName").textContent = user.name;
-      document.getElementById("devGender").textContent = user.gender;
-      document.getElementById("devRegion").textContent = user.region;
-      document.getElementById("devDistrict").textContent = user.district;
-      document.getElementById("devVoted").textContent = user.hasVoted ? "Yes" : "No";
+    function checkAdmin() {
+      const user = document.getElementById("adminUser").value.trim();
+      const pass = document.getElementById("adminPass").value.trim();
+
+      if (user === validUser && pass === validPass) {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("adminContent").classList.remove("hidden");
+        loadUserInfo();
+      } else {
+        alert("❌ Invalid username or password");
+      }
     }
-    </script>
+
+    function loadUserInfo() {
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (!user) return alert("No user data found!");
+
+      document.getElementById("nameData").textContent = user.name;
+      document.getElementById("genderData").textContent = user.gender;
+      document.getElementById("regionData").textContent = user.region;
+      document.getElementById("districtData").textContent = user.district;
+      document.getElementById("votedData").textContent = user.hasVoted ? "Yes" : "No";
+    }
+  </script>
 </body>
 </html>
