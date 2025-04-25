@@ -1,56 +1,92 @@
-// Firebase Config
-const firebaseConfig = {
-  apiKey: "AIzaSyAouJWrr6MA60Lfp_3jZaLfRgsWFpunddo",
-  authDomain: "somalielection2026-2086f.firebaseapp.com",
-  databaseURL: "https://somalielection2026-2086f-default-rtdb.firebaseio.com",
-  projectId: "somalielection2026-2086f",
-  storageBucket: "somalielection2026-2086f.appspot.com",
-  messagingSenderId: "118367125204",
-  appId: "1:118367125204:web:683ff14c39fb1d18488541"
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) loginForm.addEventListener("submit", handleLogin);
+
+    if (window.location.pathname.includes("vote.html")) {
+        loadUserInfo();
+    }
+
+    if (window.location.pathname.includes("results.html")) {
+        showResults();
+    }
+});
+
+function handleLogin(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const gender = document.getElementById("gender").value;
+    const region = document.getElementById("region").value.trim();
+    const district = document.getElementById("district").value.trim();
+
+    if (!name || !gender || !region || !district) {
+        alert("Fadlan buuxi foomka si sax ah.");
+        return;
+    }
+
+    const user = { name, gender, region, district, hasVoted: false };
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    window.location.href = "vote.html";
+}
+
+function loadUserInfo() {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (!user) window.location.href = "index.html";
+
+    document.getElementById("displayName").textContent = user.name;
+    document.getElementById("displayDistrict").textContent = user.district;
+
+    const regionEl = document.getElementById("displayRegion");
+    if (regionEl) regionEl.textContent = user.region;
+}
+
+let selectedCandidate = null;
+
+window.selectCandidate = (candidate) => {
+    selectedCandidate = candidate;
+    document.getElementById("selectedCandidateName").textContent = getFullName(candidate);
+    document.getElementById("confirmation").classList.remove("hidden");
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+window.cancelVote = () => {
+    selectedCandidate = null;
+    document.getElementById("confirmation").classList.add("hidden");
+};
 
-function login() {
-  const name = document.getElementById("name").value;
-  const gender = document.getElementById("gender").value;
-  const district = document.getElementById("district").value;
-
-  if (!name || !gender || !district) {
-    alert("Please fill in all fields.");
-    return;
-  }
-
-  sessionStorage.setItem("user", name);
-  window.location.href = "vote.html";
+function getFullName(shortName) {
+    const names = {
+        Farmaajo: "Mohamed Abdullahi Farmaajo",
+        Hassan: "Hassan Sheikh Mohamud",
+        Khaire: "Hassan Ali Khaire",
+        Sharif: "Sharif Sheikh Ahmed",
+        Roble: "Mohamed Hussein Roble",
+        Shirdon: "Abdi Farah Shirdon"
+    };
+    return names[shortName] || shortName;
 }
 
-function submitVote() {
-  const candidate = document.getElementById("candidate").value;
-  const ref = db.ref("votes/" + candidate);
-  ref.transaction(current => (current || 0) + 1);
-  alert("✅ Vote submitted successfully!");
-  window.location.href = "result.html";
-}
+window.submitVote = () => {
+    if (!selectedCandidate) return;
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (user.hasVoted) return alert("You have already voted!");
+
+    const voteKey = `votes_${selectedCandidate}`;
+    const current = parseInt(localStorage.getItem(voteKey)) || 0;
+    localStorage.setItem(voteKey, current + 1);
+
+    user.hasVoted = true;
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    window.location.href = "results.html";
+};
 
 function showResults() {
-  db.ref("votes/Farmaajo").on("value", snapshot => {
-    document.getElementById("farmaajoCount").textContent = snapshot.val() || 0;
-  });
-  db.ref("votes/Hassan").on("value", snapshot => {
-    document.getElementById("hassanCount").textContent = snapshot.val() || 0;
-  });
-  db.ref("votes/Khaire").on("value", snapshot => {
-    document.getElementById("khaireCount").textContent = snapshot.val() || 0;
-  });
-}
-
-function updateCandidateImage() {
-  const selected = document.getElementById("candidate").value;
-  const img = document.getElementById("candidate-img");
-
-  if (selected === "Farmaajo") img.src = "img/farmaajo.png";
-  if (selected === "Hassan") img.src = "img/hassan.png";
-  if (selected === "Khaire") img.src = "img/khaire.png";
+    const candidates = ["Farmaajo", "Hassan", "Khaire", "Sharif", "Roble", "Shirdon"];
+    candidates.forEach(candidate => {
+        const count = parseInt(localStorage.getItem(`votes_${candidate}`)) || 0;
+        const id = candidate.toLowerCase();
+        const countEl = document.getElementById(`${id}Count`);
+        const barEl = document.getElementById(`${id}Progress`);
+        if (countEl) countEl.textContent = count;
+        if (barEl) barEl.style.width = `${Math.min(count * 10, 100)}%`;
+    });
 }
