@@ -3,65 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vote - Somali Election 2026</title>
+  <title>Vote</title>
   <link rel="stylesheet" href="style.css" />
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/main.js"></script>
 </head>
 <body>
   <div class="container">
-    <img class="logo" src="images/somali-gov-logo.png" alt="Somali Government Logo" />
-    <h1>Election</h1>
-    <p id="displayName"></p>
-    <p>Region: <span id="displayRegion"></span>, District: <span id="displayDistrict"></span></p>
-
-    <h2>Cast Your Vote</h2>
-    <p>Select your preferred candidate:</p>
+    <h1>🗳️ Cast Your Vote</h1>
+    <p>Welcome, <strong id="displayName"></strong> from <strong id="displayDistrict"></strong>, <strong id="displayRegion"></strong></p>
 
     <div class="candidates-grid">
       <div class="candidate-card" onclick="selectCandidate('Farmaajo')">
         <img src="images/farmaajo.jpg" alt="Farmaajo" />
-        <strong>Mohamed Abdullahi Farmaajo</strong>
+        <h3>Farmaajo</h3>
       </div>
-
       <div class="candidate-card" onclick="selectCandidate('Hassan')">
         <img src="images/hassan.jpg" alt="Hassan" />
-        <strong>Hassan Sheikh Mohamud</strong>
+        <h3>Hassan</h3>
       </div>
-
       <div class="candidate-card" onclick="selectCandidate('Khaire')">
         <img src="images/khaire.jpg" alt="Khaire" />
-        <strong>Hassan Ali Khaire</strong>
+        <h3>Khaire</h3>
       </div>
-
-    <div class="candidate-card" onclick="selectCandidate('Roble')">
-                    <img src="images/mohamed.jpg" alt="Roble" />
-                    <h3>Mohamed Hussein Roble</h3>
-      </div>
-
       <div class="candidate-card" onclick="selectCandidate('Sharif')">
         <img src="images/sharif.jpg" alt="Sharif" />
-        <strong>Sharif Sheikh Ahmed</strong>
+        <h3>Sharif</h3>
       </div>
-
+      <div class="candidate-card" onclick="selectCandidate('Roble')">
+        <img src="images/roble.jpg" alt="Roble" />
+        <h3>Roble</h3>
+      </div>
       <div class="candidate-card" onclick="selectCandidate('Shirdon')">
         <img src="images/shirdon.jpg" alt="Shirdon" />
-        <strong>Abdi Farah Shirdon</strong>
+        <h3>Shirdon</h3>
       </div>
     </div>
 
     <div id="confirmation" class="hidden">
-      <h3>Are you sure you want to vote for <span id="selectedCandidateName"></span>?</h3>
+      <p>You selected: <strong id="selectedCandidateName"></strong></p>
       <div class="confirmation-buttons">
-        <button class="confirm-btn" onclick="submitVote()">Yes, Vote</button>
+        <button class="confirm-btn" onclick="submitVote()">Confirm</button>
         <button class="cancel-btn" onclick="cancelVote()">Cancel</button>
       </div>
     </div>
   </div>
-
-  <div class="footer">
-    &copy; 2026 Guddiga Doorashooyinka Qaranka Soomaaliyeed. Xuquuqda way dhawrnsan yihiin.
-  </div>
-
-  <script type="module" src="js/config.js"></script>
-  <script type="module" src="js/main.js"></script>
 </body>
 </html>
