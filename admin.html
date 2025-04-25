@@ -1,64 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Admin Login - SomaliVoteApp</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <style>
-        .hidden {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - SomaliVoteApp</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>🔐 Admin Login</h1>
+  <div class="container">
+    <h2>🔐 Admin Login</h2>
+    <h3>📋 Voters List</h3>
 
-        <div id="loginSection">
-            <input type="text" id="adminUser" placeholder="Username" />
-            <input type="password" id="adminPass" placeholder="Password" />
-            <button onclick="checkAdmin()">Login</button>
-        </div>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Region</th>
+          <th>District</th>
+          <th>Voted</th>
+        </tr>
+      </thead>
+      <tbody id="voterTableBody">
+        <!-- Voter entries will appear here -->
+      </tbody>
+    </table>
+  </div>
 
-        <div id="adminContent" class="hidden">
-            <h2>✅ Welcome, Admin!</h2>
-            <p>Voter info:</p>
-            <p><strong>Name:</strong> <span id="nameData">-</span></p>
-            <p><strong>Gender:</strong> <span id="genderData">-</span></p>
-            <p><strong>Region:</strong> <span id="regionData">-</span></p>
-            <p><strong>District:</strong> <span id="districtData">-</span></p>
-            <p><strong>Voted:</strong> <span id="votedData">-</span></p>
-        </div>
-    </div>
+  <footer class="footer">
+    <p>&copy; 2026 Guddiga Doorashooyinka Qaranka Soomaaliyeed.</p>
+  </footer>
 
-    <script>
-        const validUser = "admin";
-        const validPass = "somalia2026";
-
-        function checkAdmin() {
-            const user = document.getElementById("adminUser").value.trim();
-            const pass = document.getElementById("adminPass").value.trim();
-
-            if (user === validUser && pass === validPass) {
-                document.getElementById("loginSection").classList.add("hidden");
-                document.getElementById("adminContent").classList.remove("hidden");
-                loadUserInfo();
-            } else {
-                alert("❌ Invalid username or password");
-            }
-        }
-
-        function loadUserInfo() {
-            const user = JSON.parse(localStorage.getItem("currentUser"));
-            if (!user) return alert("No user data found!");
-
-            document.getElementById("nameData").textContent = user.name;
-            document.getElementById("genderData").textContent = user.gender;
-            document.getElementById("regionData").textContent = user.region;
-            document.getElementById("districtData").textContent = user.district;
-            document.getElementById("votedData").textContent = user.hasVoted ? "Yes" : "No";
-        }
-    </script>
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
