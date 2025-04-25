@@ -1,101 +1,112 @@
-// main.js
-import { database } from './config.js';
-import { ref, set, get, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+// Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-// --- Handle Login Page (index.html)
-const submitButton = document.getElementById("submitBtn");
-if (submitButton) {
-  submitButton.addEventListener("click", () => {
-    const name = document.getElementById("name").value.trim();
-    const gender = document.getElementById("gender").value;
-    const region = document.getElementById("region").value.trim();
-    const district = document.getElementById("district").value.trim();
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyAouJWrr6MA60Lfp_3jZaLfRgsWFpunddo",
+  authDomain: "somalielection2026-2086f.firebaseapp.com",
+  databaseURL: "https://somalielection2026-2086f-default-rtdb.firebaseio.com",
+  projectId: "somalielection2026-2086f",
+  storageBucket: "somalielection2026-2086f.appspot.com",
+  messagingSenderId: "118367125204",
+  appId: "1:118367125204:web:683ff14c39fb1d18488541",
+  measurementId: "G-LXDNTMSVP1"
+};
 
-    if (!name || !gender || !region || !district) {
-      alert("Fadlan buuxi dhammaan meelaha!");
-      return;
-    }
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
-    const user = {
-      name,
-      gender,
-      region,
-      district,
-      hasVoted: false
-    };
+// User login
+document.addEventListener("DOMContentLoaded", () => {
+  const loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+      const name = document.getElementById("name").value.trim();
+      const gender = document.getElementById("gender").value;
+      const region = document.getElementById("region").value.trim();
+      const district = document.getElementById("district").value.trim();
 
-    localStorage.setItem("currentUser", JSON.stringify(user));
+      if (!name || !gender || !region || !district) {
+        alert("Fadlan buuxi dhammaan meelaha loo baahan yahay.");
+        return;
+      }
 
-    set(ref(database, "voters/" + name.replace(/\s+/g, "_")), user)
-      .then(() => {
-        window.location.href = "vote.html";
-      })
-      .catch((error) => {
-        console.error("Error writing to database:", error);
-        alert("Error saving info.");
-      });
-  });
-}
+      const user = { name, gender, region, district, hasVoted: false };
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      window.location.href = "vote.html";
+    });
+  }
 
-// --- Handle Voting Page (vote.html)
-let selectedCandidate = null;
+  // On vote.html
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  if (user && document.getElementById("displayName")) {
+    document.getElementById("displayName").textContent = user.name;
+    document.getElementById("displayGender") && (document.getElementById("displayGender").textContent = user.gender);
+    document.getElementById("displayRegion").textContent = user.region;
+    document.getElementById("displayDistrict").textContent = user.district;
+  }
 
-window.selectCandidate = (candidate) => {
-  selectedCandidate = candidate;
-  document.getElementById("selectedCandidateName").textContent = getCandidateFullName(candidate);
+  if (user && user.hasVoted && document.getElementById("confirmation")) {
+    document.querySelector(".candidates-grid").style.display = "none";
+    document.getElementById("confirmation").innerHTML = `<p>✅ You have already voted. Thank you!</p>`;
+  }
+});
+
+let selectedCandidate = "";
+
+window.selectCandidate = function (name) {
+  selectedCandidate = name;
+  document.getElementById("selectedCandidateName").textContent = name;
   document.getElementById("confirmation").classList.remove("hidden");
 };
 
-window.cancelVote = () => {
-  selectedCandidate = null;
+window.cancelVote = function () {
+  selectedCandidate = "";
   document.getElementById("confirmation").classList.add("hidden");
 };
 
-function getCandidateFullName(shortName) {
-  const map = {
-    "Farmaajo": "Mohamed Abdullahi Farmaajo",
-    "Hassan": "Hassan Sheikh Mohamud",
-    "Khaire": "Hassan Ali Khaire"
-    // Add more if needed
-  };
-  return map[shortName] || shortName;
-}
-
-window.submitVote = async () => {
-  if (!selectedCandidate) return;
-
+window.submitVote = function () {
   const user = JSON.parse(localStorage.getItem("currentUser"));
-  if (user.hasVoted) {
-    alert("You have already voted!");
+  if (!user || user.hasVoted) {
+    alert("You already voted or user info is missing.");
     return;
   }
 
-  const candidateRef = ref(database, "votes/" + selectedCandidate);
-  const snapshot = await get(candidateRef);
-  const currentVotes = snapshot.exists() ? snapshot.val() : 0;
+  const voteRef = ref(database, `votes/${selectedCandidate}`);
+  const newUserRef = push(ref(database, "users"));
 
-  await set(candidateRef, currentVotes + 1);
+  update(ref(database, `votes`), {
+    [selectedCandidate]: (firebaseVotes[selectedCandidate] || 0) + 1
+  });
 
-  // Update the user hasVoted = true
-  const userRef = ref(database, "voters/" + user.name.replace(/\s+/g, "_"));
-  await update(userRef, { hasVoted: true });
+  set(newUserRef, {
+    name: user.name,
+    gender: user.gender,
+    region: user.region,
+    district: user.district,
+    voted: selectedCandidate
+  });
 
   user.hasVoted = true;
   localStorage.setItem("currentUser", JSON.stringify(user));
-
-  window.location.href = "results.html"; // Redirect after voting
+  window.location.href = "results.html";
 };
 
-// --- Load User Info on Vote Page
-document.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem("currentUser"));
-  if (user) {
-    const nameEl = document.getElementById("displayName");
-    const districtEl = document.getElementById("displayDistrict");
-    const regionEl = document.getElementById("displayRegion");
+// Vote results display
+const firebaseVotes = {};
 
-    if (nameEl) nameEl.textContent = user.name;
-    if (districtEl) districtEl.textContent = user.district;
-    if (regionEl) regionEl.textContent = user.region;
-  }
-});
+if (window.location.pathname.includes("results.html")) {
+  onValue(ref(database, "votes"), (snapshot) => {
+    const data = snapshot.val() || {};
+    const candidates = ["Farmaajo", "Hassan", "Khaire", "Sharif", "Roble", "Shirdon"];
+
+    candidates.forEach((name) => {
+      const count = data[name] || 0;
+      firebaseVotes[name] = count;
+      document.getElementById(`${name.toLowerCase()}Votes`).textContent = count;
+      document.getElementById(`${name.toLowerCase()}Bar`).style.width = `${count * 20}px`;
+    });
+  });
+}
