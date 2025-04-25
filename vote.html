@@ -2,58 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vote</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vote - Doorashada Soomaaliya 2026</title>
   <link rel="stylesheet" href="style.css" />
-  <script type="module" src="js/config.js"></script>
-  <script type="module" src="js/main.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>🗳️ Cast Your Vote</h1>
+    <h2>🗳️ Cast Your Vote</h2>
     <p>Welcome, <strong id="displayName"></strong> from <strong id="displayDistrict"></strong>, <strong id="displayRegion"></strong></p>
+    
+    <h3>Select your preferred candidate:</h3>
+    <div class="candidates-grid">
 
-<div class="candidates-grid">
+      <div class="candidate-card" onclick="selectCandidate('Farmaajo')">
+        <img src="images/farmaajo.jpg" alt="Farmaajo" />
+        <p><strong>Mohamed Abdullahi Farmaajo</strong></p>
+      </div>
 
-  <div class="candidate-card" onclick="selectCandidate('Farmaajo')">
-    <img src="images/farmaajo.jpg" alt="Farmaajo">
-    <p><strong>Mohamed Abdullahi Farmaajo</strong></p>
-  </div>
+      <div class="candidate-card" onclick="selectCandidate('Hassan')">
+        <img src="images/hassan.jpg" alt="Hassan" />
+        <p><strong>Hassan Sheikh Mohamud</strong></p>
+      </div>
 
-  <div class="candidate-card" onclick="selectCandidate('Hassan')">
-    <img src="images/hassan.jpg" alt="Hassan">
-    <p><strong>Hassan Sheikh Mohamud</strong></p>
-  </div>
+      <div class="candidate-card" onclick="selectCandidate('Khaire')">
+        <img src="images/khaire.jpg" alt="Khaire" />
+        <p><strong>Hassan Ali Khaire</strong></p>
+      </div>
 
-  <div class="candidate-card" onclick="selectCandidate('Khaire')">
-    <img src="images/khaire.jpg" alt="Khaire">
-    <p><strong>Hassan Ali Khaire</strong></p>
-  </div>
+      <div class="candidate-card" onclick="selectCandidate('Roble')">
+        <img src="images/roble.jpg" alt="Roble" />
+        <p><strong>Mohamed Hussein Roble</strong></p>
+      </div>
 
-  <div class="candidate-card" onclick="selectCandidate('Roble')">
-    <img src="images/roble.jpg" alt="Roble">
-    <p><strong>Mohamed Hussein Roble</strong></p>
-  </div>
+      <div class="candidate-card" onclick="selectCandidate('Sharif')">
+        <img src="images/sharif.jpg" alt="Sharif" />
+        <p><strong>Sharif Sheikh Ahmed</strong></p>
+      </div>
 
-  <div class="candidate-card" onclick="selectCandidate('Sharif')">
-    <img src="images/sharif.jpg" alt="Sharif">
-    <p><strong>Sharif Sheikh Ahmed</strong></p>
-  </div>
+      <div class="candidate-card" onclick="selectCandidate('Shirdon')">
+        <img src="images/shirdon.jpg" alt="Shirdon" />
+        <p><strong>Abdi Farah Shirdon</strong></p>
+      </div>
 
-  <div class="candidate-card" onclick="selectCandidate('Shirdon')">
-    <img src="images/shirdon.jpg" alt="Shirdon">
-    <p><strong>Abdi Farah Shirdon</strong></p>
-  </div>
-
-</div>
+    </div>
 
     <div id="confirmation" class="hidden">
-      <p>You selected: <strong id="selectedCandidateName"></strong></p>
+      <p>Are you sure you want to vote for <strong id="selectedCandidateName"></strong>?</p>
       <div class="confirmation-buttons">
-        <button class="confirm-btn" onclick="submitVote()">Confirm</button>
+        <button class="confirm-btn" onclick="submitVote()">Yes</button>
         <button class="cancel-btn" onclick="cancelVote()">Cancel</button>
       </div>
     </div>
   </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Guddiga Doorashooyinka Qaranka Soomaaliyeed.</p>
+  </footer>
+
+  <!-- Firebase config and main logic -->
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
