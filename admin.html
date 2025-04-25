@@ -1,61 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Admin Login - SomaliVoteApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .hidden { display: none; }
-  </style>
+  <meta charset="UTF-8"/>
+  <title>Admin - SomaliVoteApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>.hidden { display: none; }</style>
 </head>
 <body>
   <div class="container">
     <h1>🔐 Admin Login</h1>
 
     <div id="loginSection">
-      <input type="text" id="adminUser" placeholder="Username" />
-      <input type="password" id="adminPass" placeholder="Password" />
+      <input type="text" id="adminUser" placeholder="Username"/>
+      <input type="password" id="adminPass" placeholder="Password"/>
       <button onclick="checkAdmin()">Login</button>
     </div>
 
     <div id="adminContent" class="hidden">
-      <h2>✅ Welcome, Admin!</h2>
-      <p>Voter info:</p>
-      <p><strong>Name:</strong> <span id="nameData">-</span></p>
-      <p><strong>Gender:</strong> <span id="genderData">-</span></p>
-      <p><strong>Region:</strong> <span id="regionData">-</span></p>
-      <p><strong>District:</strong> <span id="districtData">-</span></p>
-      <p><strong>Voted:</strong> <span id="votedData">-</span></p>
+      <h2>📋 Voter List</h2>
+      <table border="1" id="votersTable">
+        <thead>
+          <tr><th>Name</th><th>Gender</th><th>Region</th><th>District</th><th>Voted</th></tr>
+        </thead>
+        <tbody id="votersBody"></tbody>
+      </table>
     </div>
   </div>
 
-  <script>
-    const validUser = "admin";
-    const validPass = "somalia2026";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+    import { firebaseConfig } from "./js/config.js";
 
-    function checkAdmin() {
-      const user = document.getElementById("adminUser").value.trim();
-      const pass = document.getElementById("adminPass").value.trim();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-      if (user === validUser && pass === validPass) {
+    const adminUsername = "admin";
+    const adminPassword = "somalia2026";
+
+    window.checkAdmin = function() {
+      const user = document.getElementById("adminUser").value;
+      const pass = document.getElementById("adminPass").value;
+
+      if (user === adminUsername && pass === adminPassword) {
         document.getElementById("loginSection").classList.add("hidden");
         document.getElementById("adminContent").classList.remove("hidden");
-        loadUserInfo();
+        loadUsers();
       } else {
-        alert("❌ Invalid username or password");
+        alert("Invalid admin credentials!");
       }
     }
 
-    function loadUserInfo() {
-      const user = JSON.parse(localStorage.getItem("currentUser"));
-      if (!user) return alert("No user data found!");
-
-      document.getElementById("nameData").textContent = user.name;
-      document.getElementById("genderData").textContent = user.gender;
-      document.getElementById("regionData").textContent = user.region;
-      document.getElementById("districtData").textContent = user.district;
-      document.getElementById("votedData").textContent = user.hasVoted ? "Yes" : "No";
+    function loadUsers() {
+      const tbody = document.getElementById("votersBody");
+      onValue(ref(db, "users"), (snapshot) => {
+        tbody.innerHTML = "";
+        snapshot.forEach(child => {
+          const user = child.val();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${user.name}</td>
+            <td>${user.gender}</td>
+            <td>${user.region}</td>
+            <td>${user.district}</td>
+            <td>${user.hasVoted ? "Yes" : "No"}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
     }
   </script>
 </body>
