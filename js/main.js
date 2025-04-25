@@ -27,9 +27,9 @@ function handleLogin(e) {
     }
 
     const user = { name, gender, region, district, hasVoted: false };
-    localStorage.setItem("currentUser", JSON.stringify(user));
+    sessionStorage.setItem("currentUser", JSON.stringify(user));
 
-    // Save user info to Firebase
+    // Save user info into Firebase (under /users)
     const usersRef = ref(db, "users");
     push(usersRef, user);
 
@@ -37,12 +37,11 @@ function handleLogin(e) {
 }
 
 function loadUserInfo() {
-    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const user = JSON.parse(sessionStorage.getItem("currentUser"));
     if (!user) return window.location.href = "index.html";
 
     document.getElementById("displayName").textContent = user.name;
     document.getElementById("displayDistrict").textContent = user.district;
-
     const regionEl = document.getElementById("displayRegion");
     if (regionEl) regionEl.textContent = user.region;
 }
@@ -51,7 +50,7 @@ let selectedCandidate = null;
 
 window.selectCandidate = (candidate) => {
     selectedCandidate = candidate;
-    document.getElementById("selectedCandidateName").textContent = getFullName(candidate);
+    document.getElementById("selectedCandidateName").textContent = getCandidateFullName(candidate);
     document.getElementById("confirmation").classList.remove("hidden");
 };
 
@@ -60,7 +59,7 @@ window.cancelVote = () => {
     document.getElementById("confirmation").classList.add("hidden");
 };
 
-function getFullName(shortName) {
+function getCandidateFullName(shortName) {
     const names = {
         Farmaajo: "Mohamed Abdullahi Farmaajo",
         Hassan: "Hassan Sheikh Mohamud",
@@ -74,16 +73,16 @@ function getFullName(shortName) {
 
 window.submitVote = async () => {
     if (!selectedCandidate) return;
-    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const user = JSON.parse(sessionStorage.getItem("currentUser"));
     if (user.hasVoted) return alert("You have already voted!");
 
     const voteRef = ref(db, `votes/${selectedCandidate}/count`);
     const snapshot = await get(voteRef);
-    const current = snapshot.exists() ? snapshot.val() : 0;
-    await set(voteRef, current + 1);
+    const currentCount = snapshot.exists() ? snapshot.val() : 0;
+    await set(voteRef, currentCount + 1);
 
     user.hasVoted = true;
-    localStorage.setItem("currentUser", JSON.stringify(user));
+    sessionStorage.setItem("currentUser", JSON.stringify(user));
     window.location.href = "results.html";
 };
 
@@ -95,7 +94,12 @@ function showResults() {
             const count = snapshot.exists() ? snapshot.val() : 0;
             const id = candidate.toLowerCase();
             const countEl = document.getElementById(`${id}Count`);
-            if (countEl) countEl.textContent = `${count} votes`;
+            const barEl = document.getElementById(`${id}Progress`);
+            if (countEl) countEl.textContent = count;
+            if (barEl) {
+                barEl.style.width = `${Math.min(count, 100)}%`;
+                barEl.setAttribute("aria-valuenow", count);
+            }
         });
     });
 }
