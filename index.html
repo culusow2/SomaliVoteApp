@@ -2,29 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Doorashada Soomaaliya 2026</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <img src="images/logo.png" alt="Somali Government Logo" class="logo" />
-
-    <h2>🗳️ Doorashada Soomaaliya 2026</h2>
+    <h1>🗳️ Doorashada Soomaaliya 2026</h1>
     <p>Platformka Codbixinta</p>
 
     <input type="text" id="name" placeholder="Magacaaga oo dhameystiran" />
-    
     <select id="gender">
-      <option disabled selected>Xulo Jinsiga</option>
+      <option value="">Xulo Jinsiga</option>
       <option value="Lab">Lab</option>
-      <option value="Dhedig">Dhedig</option>
+      <option value="Dheddig">Dheddig</option>
     </select>
-
     <input type="text" id="region" placeholder="Gobolkaaga (tusaale: Banaadir)" />
     <input type="text" id="district" placeholder="Degmadaada (tusaale: Warta Nabada)" />
-
-    <button onclick="submitLogin()">Geli</button>
+    <button id="submitBtn">Geli</button>
   </div>
 
   <footer class="footer">
