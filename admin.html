@@ -1,19 +1,33 @@
-<div class="container">
-  <h2>🧑‍💼 Visitors List</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Gender</th>
-        <th>Region</th>
-        <th>District</th>
-        <th>Voted</th>
-      </tr>
-    </thead>
-    <tbody id="voterTableBody">
-    </tbody>
-  </table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Admin Panel</h1>
 
-  <h2>🗳️ Live Voting Results</h2>
-  <div id="adminVotes"></div>
-</div>
+    <h2>Visitors List</h2>
+    <table border="1" style="width:100%; margin-bottom:20px;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Region</th>
+          <th>District</th>
+          <th>Voted</th>
+        </tr>
+      </thead>
+      <tbody id="voterTableBody"></tbody>
+    </table>
+
+    <h2>Live Voting Results</h2>
+    <div id="adminVotes"></div>
+
+  </div>
+</body>
+</html>
