@@ -10,11 +10,12 @@ body {
 /* LOGO FIX */
 .logo {
   width: 100px;
-  max-width: 100%;
-  height: auto;
+  margin-bottom: 20px;
   display: block;
-  margin: 0 auto 20px;
+  margin-left: auto;
+  margin-right: auto;
 }
+
 
 /* MAIN CONTAINER */
 .container {
