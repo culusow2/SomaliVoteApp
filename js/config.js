@@ -1,11 +1,17 @@
-// Firebase configuration
-export const firebaseConfig = {
-  apiKey: "AIzaSyC7c6A2Tt7uqOf7ZQWcTKsh3DOXzDkMwAE",
-  authDomain: "somalivoteapp.firebaseapp.com",
-  databaseURL: "https://somalivoteapp-default-rtdb.firebaseio.com",
-  projectId: "somalivoteapp",
-  storageBucket: "somalivoteapp.appspot.com",
-  messagingSenderId: "957146346027",
-  appId: "1:957146346027:web:5b79ae4f2f43f694c0b06e",
-  measurementId: "G-VG10Q15161"
+// config.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAouJWrr6MA60Lfp_3jZaLfRgsWFpunddo",
+  authDomain: "somalielection2026-2086f.firebaseapp.com",
+  databaseURL: "https://somalielection2026-2086f-default-rtdb.firebaseio.com",
+  projectId: "somalielection2026-2086f",
+  storageBucket: "somalielection2026-2086f.appspot.com",
+  messagingSenderId: "118367125204",
+  appId: "1:118367125204:web:683ff14c39fb1d18488541",
+  measurementId: "G-LXDNTMSVP1"
 };
+
+const app = initializeApp(firebaseConfig);
+export const database = getDatabase(app);
