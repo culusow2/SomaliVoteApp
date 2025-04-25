@@ -1,4 +1,4 @@
-﻿export const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyC7c6A2Tt7uqOf7ZQWcTKsh3DOXzDkMwAE",
     authDomain: "somalivoteapp.firebaseapp.com",
     databaseURL: "https://somalivoteapp-default-rtdb.firebaseio.com",
