@@ -1,47 +1,184 @@
+/* GENERAL STYLES */
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: url('img/somalia-flag.jpg') no-repeat center center fixed;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #2d5da1;
+    color: white;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  text-align: center;
-  width: 90%;
-  max-width: 400px;
+    max-width: 500px;
+    background: white;
+    color: black;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
 
 .logo {
-  width: 80px;
-  margin-bottom: 10px;
+    width: 100px;
+    margin-bottom: 20px;
 }
 
 input, select, button {
-  display: block;
-  width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-  font-size: 1em;
+    display: block;
+    width: 100%;
+    margin: 10px auto;
+    padding: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
 button {
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
+    background-color: #2d5da1;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-.candidate-img {
-  width: 120px;
-  margin: 20px auto;
-  display: block;
+    button:hover {
+        background-color: #1d3e73;
+    }
+
+/* CANDIDATE GRID */
+.candidates-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.candidate-card {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    width: 150px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    box-sizing: border-box;
+}
+
+    .candidate-card:hover {
+        transform: scale(1.05);
+    }
+
+    .candidate-card img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+/* CONFIRMATION */
+.confirmation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.confirm-btn {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+}
+
+.cancel-btn {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* RESULTS PROGRESS BARS */
+.result-card {
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #ccc;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #2d5da1;
+    width: 0;
+    transition: width 0.5s ease;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    color: white;
+}
+
+/* LANGUAGE SELECTOR */
+.language-selector {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.lang-btn {
+    padding: 6px 12px;
+    border: none;
+    background-color: #eee;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+    .lang-btn.active {
+        background-color: #2d5da1;
+        color: white;
+    }
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+        margin: 30px auto;
+    }
+
+    .candidate-card {
+        width: 100%;
+    }
+
+    .confirmation-buttons {
+        flex-direction: column;
+    }
+
+    input, select, button {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .progress-bar {
+        height: 16px;
+    }
+
+    .candidate-card img {
+        width: 90px;
+        height: 90px;
+    }
 }
