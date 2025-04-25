@@ -1,31 +1,90 @@
 <!DOCTYPE html>
-<html lang="so">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Doorashada Soomaaliya 2026</title>
+  <title>🔐 Admin Panel - SomaliVoteApp</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .hidden { display: none; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }
+    th { background-color: #2d5da1; color: white; }
+  </style>
 </head>
 <body>
   <div class="container">
-    <img src="images/somali-gov-logo.png" class="logo" alt="Somali Logo" />
-    <h2>📋 Doorashada Soomaaliya 2026</h2>
-    <p>Platformka Codbixinta</p>
+    <h1>🔐 Admin Login</h1>
 
-    <form id="loginForm">
-      <input type="text" id="name" placeholder="Magacaaga oo dhamaystiran" required />
-      <select id="gender" required>
-        <option value="">Xulo Jinsiga</option>
-        <option value="Lab">Lab</option>
-        <option value="Dheddig">Dheddig</option>
-      </select>
-      <input type="text" id="region" placeholder="Gobolkaaga (tusaale: Banaadir)" required />
-      <input type="text" id="district" placeholder="Degmadaada (tusaale: Warta Nabada)" required />
-      <button type="submit">Geli</button>
-    </form>
+    <div id="loginSection">
+      <input type="text" id="adminUser" placeholder="Username" required />
+      <input type="password" id="adminPass" placeholder="Password" required />
+      <button onclick="checkAdmin()">Login</button>
+    </div>
+
+    <div id="adminContent" class="hidden">
+      <h2>📋 Voters List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Region</th>
+            <th>District</th>
+            <th>Voted</th>
+          </tr>
+        </thead>
+        <tbody id="votersBody">
+          <!-- Users will be dynamically inserted here -->
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <script type="module" src="js/config.js"></script>
-  <script type="module" src="js/main.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+    import { firebaseConfig } from "./js/config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const adminUsername = "admin";
+    const adminPassword = "somalia2026";
+
+    window.checkAdmin = function() {
+      const inputUser = document.getElementById("adminUser").value.trim();
+      const inputPass = document.getElementById("adminPass").value.trim();
+
+      if (inputUser === adminUsername && inputPass === adminPassword) {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("adminContent").classList.remove("hidden");
+        loadVoters();
+      } else {
+        alert("❌ Invalid credentials!");
+      }
+    };
+
+    function loadVoters() {
+      const votersBody = document.getElementById("votersBody");
+      const usersRef = ref(db, "users");
+
+      onValue(usersRef, (snapshot) => {
+        votersBody.innerHTML = "";
+        snapshot.forEach((childSnapshot) => {
+          const voter = childSnapshot.val();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${voter.name}</td>
+            <td>${voter.gender}</td>
+            <td>${voter.region}</td>
+            <td>${voter.district}</td>
+            <td>${voter.hasVoted ? "Yes" : "No"}</td>
+          `;
+          votersBody.appendChild(row);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
