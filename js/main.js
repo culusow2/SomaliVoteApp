@@ -1,3 +1,10 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { firebaseConfig } from "./config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("loginForm");
     if (loginForm) loginForm.addEventListener("submit", handleLogin);
@@ -9,11 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.location.pathname.includes("results.html")) {
         showResults();
     }
+
+    if (window.location.pathname.includes("admin.html")) {
+        showVoterList();
+    }
 });
 
 function handleLogin(e) {
     e.preventDefault();
-
     const name = document.getElementById("name").value.trim();
     const gender = document.getElementById("gender").value;
     const region = document.getElementById("region").value.trim();
@@ -26,6 +36,10 @@ function handleLogin(e) {
 
     const user = { name, gender, region, district, hasVoted: false };
     localStorage.setItem("currentUser", JSON.stringify(user));
+
+    const votersRef = ref(db, "voters");
+    push(votersRef, user);
+
     window.location.href = "vote.html";
 }
 
@@ -71,22 +85,50 @@ window.submitVote = () => {
     if (user.hasVoted) return alert("You have already voted!");
 
     const voteKey = `votes_${selectedCandidate}`;
-    const current = parseInt(localStorage.getItem(voteKey)) || 0;
-    localStorage.setItem(voteKey, current + 1);
+    const voteRef = ref(db, voteKey);
+
+    // Update Firebase vote count
+    push(voteRef, { timestamp: Date.now() });
 
     user.hasVoted = true;
     localStorage.setItem("currentUser", JSON.stringify(user));
+
+    const voterRef = ref(db, "voters");
+    push(voterRef, user);
+
     window.location.href = "results.html";
 };
 
 function showResults() {
-    const candidates = ["Farmaajo", "Hassan", "Khaire", "Sharif", "Roble", "Shirdon"];
+    const candidates = ["Farmaajo", "Hassan", "Khaire"];
     candidates.forEach(candidate => {
-        const count = parseInt(localStorage.getItem(`votes_${candidate}`)) || 0;
-        const id = candidate.toLowerCase();
-        const countEl = document.getElementById(`${id}Count`);
-        const barEl = document.getElementById(`${id}Progress`);
-        if (countEl) countEl.textContent = count;
-        if (barEl) barEl.style.width = `${Math.min(count * 10, 100)}%`;
+        const candidateKey = `votes_${candidate}`;
+        const candidateRef = ref(db, candidateKey);
+        onValue(candidateRef, snapshot => {
+            const voteCount = snapshot.size;
+            document.getElementById(`${candidate.toLowerCase()}Count`).textContent = `${voteCount} votes`;
+            document.getElementById(`${candidate.toLowerCase()}Progress`).style.width = `${Math.min(voteCount * 10, 100)}%`;
+        });
+    });
+}
+
+function showVoterList() {
+    const voterRef = ref(db, "voters");
+    onValue(voterRef, snapshot => {
+        const list = document.getElementById("voterList");
+        list.innerHTML = "";
+
+        snapshot.forEach(child => {
+            const user = child.val();
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${user.name}</td>
+                <td>${user.gender}</td>
+                <td>${user.region}</td>
+                <td>${user.district}</td>
+                <td>${user.hasVoted ? "Yes" : "No"}</td>
+            `;
+            list.appendChild(row);
+        });
     });
 }
