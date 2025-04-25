@@ -24,6 +24,7 @@ body {
     margin-bottom: 20px;
 }
 
+/* INPUTS + BUTTONS */
 input, select, button {
     display: block;
     width: 100%;
@@ -41,6 +42,7 @@ button {
     font-weight: bold;
     transition: 0.3s;
 }
+
 button:hover {
     background-color: #1d3e73;
 }
@@ -58,19 +60,23 @@ button:hover {
     background-color: #f0f0f0;
     padding: 10px;
     border-radius: 8px;
-    width: 150px;
+    width: 160px;
     cursor: pointer;
+    text-align: center;
     transition: transform 0.2s ease;
     box-sizing: border-box;
 }
+
 .candidate-card:hover {
     transform: scale(1.05);
 }
+
 .candidate-card img {
     width: 100px;
     height: 100px;
     object-fit: cover;
     border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 /* CONFIRMATION */
@@ -81,18 +87,21 @@ button:hover {
     flex-wrap: wrap;
     margin-top: 15px;
 }
+
 .confirm-btn {
     background-color: green;
     color: white;
     padding: 10px 20px;
     border-radius: 4px;
 }
+
 .cancel-btn {
     background-color: red;
     color: white;
     padding: 10px 20px;
     border-radius: 4px;
 }
+
 .hidden {
     display: none;
 }
@@ -101,6 +110,7 @@ button:hover {
 .result-card {
     margin-bottom: 20px;
 }
+
 .progress-bar {
     width: 100%;
     background-color: #ccc;
@@ -108,11 +118,29 @@ button:hover {
     border-radius: 10px;
     overflow: hidden;
 }
+
 .progress-fill {
     height: 100%;
     background-color: #2d5da1;
     width: 0;
     transition: width 0.5s ease;
+}
+
+/* ADMIN TABLE */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.admin-table th, .admin-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.admin-table th {
+    background-color: #2d5da1;
+    color: white;
 }
 
 /* FOOTER */
@@ -130,6 +158,7 @@ button:hover {
     gap: 10px;
     margin-top: 10px;
 }
+
 .lang-btn {
     padding: 6px 12px;
     border: none;
@@ -138,17 +167,22 @@ button:hover {
     font-weight: bold;
     border-radius: 4px;
 }
+
 .lang-btn.active {
     background-color: #2d5da1;
     color: white;
 }
 
-/* ✅ RESPONSIVE DESIGN (for phones) */
+/* RESPONSIVE DESIGN */
 @media (max-width: 600px) {
     .container {
         width: 90%;
-        margin: 20px auto;
-        padding: 15px;
+        margin: 30px auto;
+    }
+
+    .candidate-card {
+        width: 90%;
+        max-width: 300px;
     }
 
     .candidates-grid {
@@ -156,8 +190,8 @@ button:hover {
         align-items: center;
     }
 
-    .candidate-card {
-        width: 90%;
+    .confirmation-buttons {
+        flex-direction: column;
     }
 
     input, select, button {
@@ -172,10 +206,5 @@ button:hover {
     .candidate-card img {
         width: 90px;
         height: 90px;
-    }
-
-    .confirmation-buttons {
-        flex-direction: column;
-        gap: 10px;
     }
 }
