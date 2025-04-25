@@ -11,7 +11,7 @@
 <body>
   <div class="container">
     <h1>🔐 Admin Login</h1>
-    <h2>🗂️ Voters List</h2>
+    <h2>🗂️ Voters List (Voted)</h2>
     <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
       <thead>
         <tr style="background: #2d5da1; color: white;">
@@ -27,5 +27,39 @@
       </tbody>
     </table>
   </div>
+
+  <script type="module">
+    // Import Firebase functions from your config.js
+    import { app } from './js/config.js';
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js';
+
+    const db = getDatabase(app);
+    const votersRef = ref(db, 'voters'); // Adjust this path to your Firebase structure
+
+    onValue(votersRef, (snapshot) => {
+      const votersData = snapshot.val();
+      const tableBody = document.getElementById('voterTableBody');
+      tableBody.innerHTML = ''; // Clear existing rows
+
+      if (votersData) {
+        Object.entries(votersData).forEach(([key, voter]) => {
+          // Only show voters who have voted
+          if (voter.voted === true || voter.voted === 'Yes') {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${voter.name || 'N/A'}</td>
+              <td>${voter.gender || 'N/A'}</td>
+              <td>${voter.region || 'N/A'}</td>
+              <td>${voter.district || 'N/A'}</td>
+              <td>${voter.voted ? 'Yes' : 'No'}</td>
+            `;
+            tableBody.appendChild(row);
+          }
+        });
+      } else {
+        tableBody.innerHTML = '<tr><td colspan="5">No voters found</td></tr>';
+      }
+    });
+  </script>
 </body>
 </html>
