@@ -1,99 +1,101 @@
-// Import Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getDatabase, ref, set, get, update, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
-import { firebaseConfig } from './config.js';
+// main.js
+import { database } from './config.js';
+import { ref, set, get, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// --- Handle Login Page (index.html)
+const submitButton = document.getElementById("submitBtn");
+if (submitButton) {
+  submitButton.addEventListener("click", () => {
+    const name = document.getElementById("name").value.trim();
+    const gender = document.getElementById("gender").value;
+    const region = document.getElementById("region").value.trim();
+    const district = document.getElementById("district").value.trim();
 
-// Global user object
-let currentUser = {};
+    if (!name || !gender || !region || !district) {
+      alert("Fadlan buuxi dhammaan meelaha!");
+      return;
+    }
 
-// Handle login
-document.querySelector("button").addEventListener("click", () => {
-  const name = document.getElementById("name").value.trim();
-  const gender = document.getElementById("gender").value;
-  const region = document.getElementById("region").value.trim();
-  const district = document.getElementById("district").value.trim();
+    const user = {
+      name,
+      gender,
+      region,
+      district,
+      hasVoted: false
+    };
 
-  if (!name || !gender || !region || !district) {
-    alert("Fadlan buuxi dhammaan meelaha banaan.");
-    return;
-  }
+    localStorage.setItem("currentUser", JSON.stringify(user));
 
-  currentUser = {
-    name,
-    gender,
-    region,
-    district,
-    hasVoted: false
-  };
-
-  localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  window.location.href = "vote.html";
-});
-
-// Display user info on vote page
-if (window.location.pathname.includes("vote.html")) {
-  const user = JSON.parse(localStorage.getItem("currentUser"));
-  if (!user) window.location.href = "index.html";
-
-  currentUser = user;
-  document.getElementById("displayName").textContent = user.name;
-  document.getElementById("displayRegion").textContent = user.region;
-  document.getElementById("displayDistrict").textContent = user.district;
+    set(ref(database, "voters/" + name.replace(/\s+/g, "_")), user)
+      .then(() => {
+        window.location.href = "vote.html";
+      })
+      .catch((error) => {
+        console.error("Error writing to database:", error);
+        alert("Error saving info.");
+      });
+  });
 }
 
-// Voting logic
-let selectedCandidate = "";
+// --- Handle Voting Page (vote.html)
+let selectedCandidate = null;
 
-window.selectCandidate = function (candidate) {
+window.selectCandidate = (candidate) => {
   selectedCandidate = candidate;
-  document.getElementById("selectedCandidateName").textContent = candidate.replace("_", " ");
+  document.getElementById("selectedCandidateName").textContent = getCandidateFullName(candidate);
   document.getElementById("confirmation").classList.remove("hidden");
 };
 
-window.cancelVote = function () {
+window.cancelVote = () => {
+  selectedCandidate = null;
   document.getElementById("confirmation").classList.add("hidden");
-  selectedCandidate = "";
 };
 
-window.submitVote = async function () {
+function getCandidateFullName(shortName) {
+  const map = {
+    "Farmaajo": "Mohamed Abdullahi Farmaajo",
+    "Hassan": "Hassan Sheikh Mohamud",
+    "Khaire": "Hassan Ali Khaire"
+    // Add more if needed
+  };
+  return map[shortName] || shortName;
+}
+
+window.submitVote = async () => {
   if (!selectedCandidate) return;
 
-  const voteRef = ref(db, 'votes/' + selectedCandidate);
-  const snapshot = await get(voteRef);
-
-  let newCount = 1;
-  if (snapshot.exists()) {
-    newCount = snapshot.val() + 1;
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  if (user.hasVoted) {
+    alert("You have already voted!");
+    return;
   }
 
-  await set(voteRef, newCount);
+  const candidateRef = ref(database, "votes/" + selectedCandidate);
+  const snapshot = await get(candidateRef);
+  const currentVotes = snapshot.exists() ? snapshot.val() : 0;
 
-  // Save that the user has voted
-  currentUser.hasVoted = true;
-  localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  await set(candidateRef, currentVotes + 1);
 
-  // Optional: Save full user under /voters
-  const voterId = Date.now();
-  await set(ref(db, 'voters/' + voterId), currentUser);
+  // Update the user hasVoted = true
+  const userRef = ref(database, "voters/" + user.name.replace(/\s+/g, "_"));
+  await update(userRef, { hasVoted: true });
 
-  alert("Codkaagii waad dhiibatay. Mahadsanid!");
-  window.location.href = "results.html";
+  user.hasVoted = true;
+  localStorage.setItem("currentUser", JSON.stringify(user));
+
+  window.location.href = "results.html"; // Redirect after voting
 };
 
-// Results logic
-if (window.location.pathname.includes("results.html")) {
-  const candidates = ["Farmaajo", "Hassan", "Khaire", "Roble", "Sharif", "Shirdon"];
+// --- Load User Info on Vote Page
+document.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  if (user) {
+    const nameEl = document.getElementById("displayName");
+    const districtEl = document.getElementById("displayDistrict");
+    const regionEl = document.getElementById("displayRegion");
 
-  candidates.forEach(async (name) => {
-    const voteRef = ref(db, 'votes/' + name);
-    const snapshot = await get(voteRef);
-    const count = snapshot.exists() ? snapshot.val() : 0;
-
-    document.getElementById(name + "Count").textContent = count;
-    document.getElementById(name + "Bar").style.width = (count * 20) + "%";
-  });
-}
+    if (nameEl) nameEl.textContent = user.name;
+    if (districtEl) districtEl.textContent = user.district;
+    if (regionEl) regionEl.textContent = user.region;
+  }
+});
