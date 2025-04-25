@@ -21,17 +21,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-function handleLogin(e) {
-    e.preventDefault();
-    const name = document.getElementById("name").value.trim();
-    const gender = document.getElementById("gender").value;
-    const region = document.getElementById("region").value.trim();
-    const district = document.getElementById("district").value.trim();
+function submitLogin() {
+  const name = document.getElementById("name").value.trim();
+  const gender = document.getElementById("gender").value.trim();
+  const region = document.getElementById("region").value.trim();
+  const district = document.getElementById("district").value.trim();
 
-    if (!name || !gender || !region || !district) {
-        alert("Please fill all fields correctly.");
-        return;
-    }
+  if (!name || !gender || !region || !district) {
+    alert("Fadlan buuxi dhammaan xogta si sax ah.");
+    return;
+  }
+
+  // Save user to localStorage
+  const user = {
+    name,
+    gender,
+    region,
+    district,
+    hasVoted: false
+  };
+
+  localStorage.setItem("currentUser", JSON.stringify(user));
+
+  // ✅ Redirect to vote.html
+  window.location.href = "vote.html";
+}
+
+// Make sure it's accessible globally if using type="module"
+window.submitLogin = submitLogin;
 
     const user = { name, gender, region, district, hasVoted: false };
     localStorage.setItem("currentUser", JSON.stringify(user));
