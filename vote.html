@@ -1,39 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vote - Somali Election</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Vote - Doorashada Soomaaliya 2026</title>
+  <link rel="stylesheet" href="style.css">
   <script type="module" src="js/config.js"></script>
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>🗳️ Election</h1>
+    <h2>Election</h2>
     <p>Welcome, <span id="displayName"></span></p>
     <p>Region: <span id="displayRegion"></span>, District: <span id="displayDistrict"></span></p>
 
-    <h2>Cast Your Vote</h2>
+    <h3>Cast Your Vote</h3>
     <p>Select your preferred candidate:</p>
 
     <div class="candidates-grid">
       <div class="candidate-card" onclick="selectCandidate('Farmaajo')">
-        <img src="images/farmaajo.jpg" alt="Farmaajo" />
+        <img src="images/farmaajo.jpg" alt="Farmaajo">
         <strong>Mohamed Abdullahi Farmaajo</strong>
       </div>
       <div class="candidate-card" onclick="selectCandidate('Hassan')">
-        <img src="images/hassan.jpg" alt="Hassan Sheikh" />
+        <img src="images/hassan.jpg" alt="Hassan">
         <strong>Hassan Sheikh Mohamud</strong>
       </div>
       <div class="candidate-card" onclick="selectCandidate('Khaire')">
-        <img src="images/khaire.jpg" alt="Khaire" />
+        <img src="images/khaire.jpg" alt="Khaire">
         <strong>Hassan Ali Khaire</strong>
+      </div>
+      <div class="candidate-card" onclick="selectCandidate('Sharif')">
+        <img src="images/sharif.jpg" alt="Sharif">
+        <strong>Sharif Sheikh Ahmed</strong>
+      </div>
+      <div class="candidate-card" onclick="selectCandidate('Roble')">
+        <img src="images/roble.jpg" alt="Roble">
+        <strong>Mohamed Hussein Roble</strong>
+      </div>
+      <div class="candidate-card" onclick="selectCandidate('Shirdon')">
+        <img src="images/shirdon.jpg" alt="Shirdon">
+        <strong>Abdi Farah Shirdon</strong>
       </div>
     </div>
 
     <div id="confirmation" class="hidden">
-      <p>✅ Are you sure you want to vote for: <strong id="selectedCandidateName"></strong>?</p>
+      <p>Are you sure you want to vote for <strong id="selectedCandidateName"></strong>?</p>
       <div class="confirmation-buttons">
         <button class="confirm-btn" onclick="submitVote()">Yes, Vote</button>
         <button class="cancel-btn" onclick="cancelVote()">Cancel</button>
