@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Developer View - Voter Info</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>👨🏽‍💻 Developer - Voter Information</h1>
+        <div id="userInfoSection">
+            <p><strong>Name:</strong> <span id="devName">-</span></p>
+            <p><strong>Gender:</strong> <span id="devGender">-</span></p>
+            <p><strong>Region:</strong> <span id="devRegion">-</span></p>
+            <p><strong>District:</strong> <span id="devDistrict">-</span></p>
+            <p><strong>Has Voted:</strong> <span id="devVoted">-</span></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Developer Access Only</p>
+    </div>
+
+    <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!user) {
+      document.getElementById("userInfoSection").innerHTML = "<p>No user data found in localStorage.</p>";
+    } else {
+      document.getElementById("devName").textContent = user.name;
+      document.getElementById("devGender").textContent = user.gender;
+      document.getElementById("devRegion").textContent = user.region;
+      document.getElementById("devDistrict").textContent = user.district;
+      document.getElementById("devVoted").textContent = user.hasVoted ? "Yes" : "No";
+    }
+    </script>
+</body>
+</html>
