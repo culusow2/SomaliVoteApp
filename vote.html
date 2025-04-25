@@ -1,71 +1,48 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vote - Somali Election 2026</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vote - Somali Election 2026</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div class="container">
-        <h1>🗳️ 2026 Somali Presidential Election</h1>
-        <p id="userInfo">
-            Welcome, <span id="displayName"></span><br>
-            Region: <span id="displayRegion"></span>, District: <span id="displayDistrict"></span>
-        </p>
+  <div class="container">
+    <h1>🗳️ 2026 Somali Presidential Election</h1>
+    <p>Welcome, <span id="displayName"></span></p>
+    <p>Region: <span id="displayRegion"></span>, District: <span id="displayDistrict"></span></p>
 
-        <div class="vote-section">
-            <h2>Cast Your Vote</h2>
-            <p>Select your preferred candidate:</p>
+    <h2>Cast Your Vote</h2>
+    <p>Select your preferred candidate:</p>
 
-            <div class="candidates-grid">
-                <div class="candidate-card" onclick="selectCandidate('Farmaajo')">
-                    <img src="images/farmaajo.jpg" alt="Farmaajo" />
-                    <h3>Mohamed Abdullahi Farmaajo</h3>
-                    <p>Peace & Development Party</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Hassan')">
-                    <img src="images/hassan.jpg" alt="Hassan" />
-                    <h3>Hassan Sheikh Mohamud</h3>
-                    <p>Union for Peace Party</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Khaire')">
-                    <img src="images/khaire.jpg" alt="Khaire" />
-                    <h3>Hassan Ali Khaire</h3>
-                    <p>National Unity Party</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Sharif')">
-                    <img src="images/sharif.jpg" alt="Sharif" />
-                    <h3>Sharif Sheikh Ahmed</h3>
-                    <p>Alliance for the Re-liberation of Somalia</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Roble')">
-                    <img src="images/mohamed.jpg" alt="Roble" />
-                    <h3>Mohamed Hussein Roble</h3>
-                    <p>Progressive Leadership Party</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Shirdon')">
-                    <img src="images/shirdon.jpg" alt="Shirdon" />
-                    <h3>Abdi Farah Shirdon</h3>
-                    <p>Forward for Somalia Party</p>
-                </div>
-            </div>
-
-            <div id="confirmation" class="hidden">
-                <h3>Confirm Your Vote</h3>
-                <p>You selected: <strong id="selectedCandidateName"></strong></p>
-                <div class="confirmation-buttons">
-                    <button class="confirm-btn" onclick="submitVote()">Confirm Vote</button>
-                    <button class="cancel-btn" onclick="cancelVote()">Cancel</button>
-                </div>
-            </div>
-        </div>
+    <div class="candidates-grid">
+      <div class="candidate-card" onclick="selectCandidate('Farmaajo')">
+        <img src="images/farmaajo.jpg" alt="Farmaajo"/>
+        <h3>Mohamed Abdullahi Farmaajo</h3>
+      </div>
+      <div class="candidate-card" onclick="selectCandidate('Hassan')">
+        <img src="images/hassan.jpg" alt="Hassan Sheikh Mohamud"/>
+        <h3>Hassan Sheikh Mohamud</h3>
+      </div>
+      <div class="candidate-card" onclick="selectCandidate('Khaire')">
+        <img src="images/khaire.jpg" alt="Hassan Ali Khaire"/>
+        <h3>Hassan Ali Khaire</h3>
+      </div>
     </div>
 
-    <div class="footer">
-        <p>Your vote is confidential and secure.</p>
+    <div id="confirmation" class="hidden">
+      <h3>Confirm Your Vote</h3>
+      <p>You selected: <strong id="selectedCandidateName"></strong></p>
+      <button onclick="submitVote()">Confirm</button>
+      <button onclick="cancelVote()">Cancel</button>
     </div>
+  </div>
 
-    <script src="js/main.js"></script>
+  <div class="footer">
+    <p>Your vote is confidential and secure.</p>
+  </div>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
