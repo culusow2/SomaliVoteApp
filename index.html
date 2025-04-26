@@ -1,33 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="so">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Doorashada Soomaaliya 2026</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doorashada Soomaaliya 2026</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <img src="images/logo.png" alt="Somali Government Logo" class="logo" />
-    <h1>🗳️ Doorashada Soomaaliya 2026</h1>
-    <p>Platformka Codbixinta</p>
+    <div class="container">
+        <img src="images/somali-gov-logo.png" alt="Astaanta Dowladda Soomaaliya" class="logo">
+        <h1>🗳️ Doorashada Soomaaliya 2026</h1>
+        <p class="subtitle">Platformka Codbixinta</p>
 
-    <input type="text" id="name" placeholder="Magacaaga oo dhameystiran" />
-    <select id="gender">
-      <option value="">Xulo Jinsiga</option>
-      <option value="Lab">Lab</option>
-      <option value="Dheddig">Dheddig</option>
-    </select>
-    <input type="text" id="region" placeholder="Gobolkaaga (tusaale: Banaadir)" />
-    <input type="text" id="district" placeholder="Degmadaada (tusaale: Warta Nabada)" />
-    <button id="submitBtn">Geli</button>
-  </div>
+        <form id="loginForm">
+            <input type="text" id="name" placeholder="Magacaaga oo dhameystiran" required minlength="3">
+            <select id="gender" required>
+                <option value="">Xulo Jinsiga</option>
+                <option value="Lab">Lab</option>
+                <option value="Dheddig">Dheddig</option>
+                <option value="Kale">Kale</option>
+            </select>
+            <input type="text" id="region" placeholder="Gobolkaaga (tusaale: Banaadir)" required>
+            <input type="text" id="district" placeholder="Degmadaada (tusaale: Warta Nabada)" required>
+            <button type="submit" id="loginBtn">Geli</button>
+        </form>
 
-  <footer class="footer">
-    <p>&copy; 2026 Guddiga Doorashooyinka Qaranka Soomaaliyeed.</p>
-  </footer>
+        <div class="language-selector">
+            <button class="lang-btn active">Soomaali</button>
+            <button class="lang-btn">English</button>
+            <button class="lang-btn">العربية</button>
+        </div>
+    </div>
 
-  <script type="module" src="js/config.js"></script>
-  <script type="module" src="js/main.js"></script>
+    <div class="footer">
+        <p>© 2026 Guddiga Doorashooyinka Qaranka Soomaaliya. Xuquuqda way dhawrsan yihiin.</p>
+    </div>
+
+    <script>
+      document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const gender = document.getElementById("gender").value.trim();
+        const region = document.getElementById("region").value.trim();
+        const district = document.getElementById("district").value.trim();
+
+        if (name && gender && region && district) {
+          // Save voter data to sessionStorage
+          sessionStorage.setItem("voterName", name);
+          sessionStorage.setItem("voterGender", gender);
+          sessionStorage.setItem("voterRegion", region);
+          sessionStorage.setItem("voterDistrict", district);
+
+          // Redirect to vote page
+          window.location.href = "vote.html";
+        } else {
+          alert("Fadlan buuxi dhammaan meelaha si sax ah!");
+        }
+      });
+    </script>
 </body>
 </html>
