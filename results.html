@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>📊 Election Results</h1>
+    <h1>📊 2026 Somali Presidential Election Results</h1>
 
     <div class="result-card">
       Mohamed Abdullahi Farmaajo: <strong><span id="farmaajoCount">0</span></strong>
@@ -41,6 +41,10 @@
     </div>
   </div>
 
+  <div class="footer">
+    <p>© 2026 Guddiga Doorashooyinka Qaranka Soomaaliyeed. Natiijooyinka waa Live.</p>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
@@ -70,8 +74,10 @@
     };
 
     onValue(voteRef, (snapshot) => {
-      // Reset counts
-      for (let name in voteCounts) voteCounts[name] = 0;
+      // Reset counts first
+      for (let name in voteCounts) {
+        voteCounts[name] = 0;
+      }
 
       const data = snapshot.val();
       let totalVotes = 0;
@@ -86,13 +92,16 @@
         });
       }
 
-      // Update DOM
+      // Update the DOM
       for (let name in voteCounts) {
         const count = voteCounts[name];
         const percent = totalVotes === 0 ? 0 : (count / totalVotes) * 100;
 
-        document.getElementById(ids[name].count).textContent = count;
-        document.getElementById(ids[name].bar).style.width = percent + "%";
+        const countElement = document.getElementById(ids[name].count);
+        const barElement = document.getElementById(ids[name].bar);
+
+        if (countElement) countElement.textContent = count;
+        if (barElement) barElement.style.width = percent + "%";
       }
     });
   </script>
