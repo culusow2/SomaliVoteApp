@@ -8,7 +8,9 @@
 </head>
 <body>
     <div class="container">
-        <img src="images/somali-gov-logo.png" alt="Astaanta Dowladda Soomaaliya" class="logo">
+        <!-- ✅ Corrected logo file name -->
+        <img src="images/logo.png" alt="Astaanta Dowladda Soomaaliya" class="logo">
+
         <h1>🗳️ Doorashada Soomaaliya 2026</h1>
         <p class="subtitle">Platformka Codbixinta</p>
 
@@ -37,27 +39,25 @@
     </div>
 
     <script>
-      document.getElementById("loginForm").addEventListener("submit", function(event) {
-        event.preventDefault();
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
 
-        const name = document.getElementById("name").value.trim();
-        const gender = document.getElementById("gender").value.trim();
-        const region = document.getElementById("region").value.trim();
-        const district = document.getElementById("district").value.trim();
+            const name = document.getElementById("name").value.trim();
+            const gender = document.getElementById("gender").value.trim();
+            const region = document.getElementById("region").value.trim();
+            const district = document.getElementById("district").value.trim();
 
-        if (name && gender && region && district) {
-          // Save voter data to sessionStorage
-          sessionStorage.setItem("voterName", name);
-          sessionStorage.setItem("voterGender", gender);
-          sessionStorage.setItem("voterRegion", region);
-          sessionStorage.setItem("voterDistrict", district);
+            if (name && gender && region && district) {
+                sessionStorage.setItem("voterName", name);
+                sessionStorage.setItem("voterGender", gender);
+                sessionStorage.setItem("voterRegion", region);
+                sessionStorage.setItem("voterDistrict", district);
 
-          // Redirect to vote page
-          window.location.href = "vote.html";
-        } else {
-          alert("Fadlan buuxi dhammaan meelaha si sax ah!");
-        }
-      });
+                window.location.href = "vote.html";
+            } else {
+                alert("Fadlan buuxi dhammaan meelaha si sax ah!");
+            }
+        });
     </script>
 </body>
 </html>
