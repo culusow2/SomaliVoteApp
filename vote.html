@@ -66,54 +66,58 @@
     <p>Your vote is confidential and secure.</p>
   </div>
 
-  <!-- ✅ Fixed JS: Expose functions globally -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-    import { firebaseConfig } from "./js/config.js";
+  <!-- ✅ Firebase Scripts (no type="module") -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+  <script src="js/config.js"></script> <!-- This must contain: const firebaseConfig = {...} -->
 
-    // Display voter info
+  <script>
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     document.getElementById("displayName").textContent = sessionStorage.getItem("voterName") || "Guest";
     document.getElementById("displayRegion").textContent = sessionStorage.getItem("voterRegion") || "Unknown";
     document.getElementById("displayDistrict").textContent = sessionStorage.getItem("voterDistrict") || "Unknown";
 
     let selectedCandidate = "";
 
-    // ✅ Expose to global window so onclick works
-    window.selectCandidate = function(name) {
+    function selectCandidate(name) {
       selectedCandidate = name;
       document.getElementById("selectedCandidateName").textContent = name;
       document.getElementById("confirmation").classList.remove("hidden");
-    };
+    }
 
-    window.cancelVote = function () {
+    function cancelVote() {
       selectedCandidate = "";
       document.getElementById("confirmation").classList.add("hidden");
-    };
+    }
 
-    window.submitVote = function () {
+    function submitVote() {
       if (!selectedCandidate) {
         alert("Please select a candidate first.");
         return;
       }
 
-      const voteRef = push(ref(db, "votes"));
-      set(voteRef, {
+      const voteRef = db.ref("votes").push();
+      voteRef.set({
         candidate: selectedCandidate,
         voter: sessionStorage.getItem("voterName"),
         region: sessionStorage.getItem("voterRegion"),
         district: sessionStorage.getItem("voterDistrict"),
         timestamp: Date.now()
       }).then(() => {
-        alert("✅ Your vote has been successfully recorded!");
+        alert("✅ Your vote has been recorded!");
         window.location.href = "results.html";
       }).catch((error) => {
-        alert("❌ Error submitting vote: " + error.message);
+        alert("❌ Error: " + error.message);
       });
-    };
+    }
+
+    // Expose globally
+    window.selectCandidate = selectCandidate;
+    window.cancelVote = cancelVote;
+    window.submitVote = submitVote;
   </script>
 </body>
 </html>
