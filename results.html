@@ -1,109 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Election Results</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <h1>📊 2026 Somali Presidential Election Results</h1>
 
+    <!-- Each candidate with count and progress bar -->
     <div class="result-card">
-      Mohamed Abdullahi Farmaajo: <strong><span id="farmaajoCount">0</span></strong>
-      <div class="progress-bar"><div id="farmaajoProgress" class="progress-fill"></div></div>
+      <h3>Mohamed Abdullahi Farmaajo: <span id="Mohamed Abdullahi Farmaajo-count">0</span></h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="Mohamed Abdullahi Farmaajo-bar"></div>
+      </div>
     </div>
 
     <div class="result-card">
-      Hassan Sheikh Mohamud: <strong><span id="hassanCount">0</span></strong>
-      <div class="progress-bar"><div id="hassanProgress" class="progress-fill"></div></div>
+      <h3>Hassan Sheikh Mohamud: <span id="Hassan Sheikh Mohamud-count">0</span></h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="Hassan Sheikh Mohamud-bar"></div>
+      </div>
     </div>
 
     <div class="result-card">
-      Hassan Ali Khaire: <strong><span id="khaireCount">0</span></strong>
-      <div class="progress-bar"><div id="khaireProgress" class="progress-fill"></div></div>
+      <h3>Hassan Ali Khaire: <span id="Hassan Ali Khaire-count">0</span></h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="Hassan Ali Khaire-bar"></div>
+      </div>
     </div>
 
     <div class="result-card">
-      Sharif Sheikh Ahmed: <strong><span id="sharifCount">0</span></strong>
-      <div class="progress-bar"><div id="sharifProgress" class="progress-fill"></div></div>
+      <h3>Sharif Sheikh Ahmed: <span id="Sharif Sheikh Ahmed-count">0</span></h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="Sharif Sheikh Ahmed-bar"></div>
+      </div>
     </div>
 
     <div class="result-card">
-      Mohamed Hussein Roble: <strong><span id="robleCount">0</span></strong>
-      <div class="progress-bar"><div id="robleProgress" class="progress-fill"></div></div>
+      <h3>Mohamed Hussein Roble: <span id="Mohamed Hussein Roble-count">0</span></h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="Mohamed Hussein Roble-bar"></div>
+      </div>
     </div>
 
     <div class="result-card">
-      Abdi Farah Shirdon: <strong><span id="shirdonCount">0</span></strong>
-      <div class="progress-bar"><div id="shirdonProgress" class="progress-fill"></div></div>
+      <h3>Abdi Farah Shirdon: <span id="Abdi Farah Shirdon-count">0</span></h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="Abdi Farah Shirdon-bar"></div>
+      </div>
     </div>
   </div>
 
-  <div class="footer">
-    <p>© 2026 Guddiga Doorashooyinka Qaranka Soomaaliyeed. Natiijooyinka waa Live.</p>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-    import { firebaseConfig } from "./js/config.js";
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const voteRef = ref(db, "votes");
-
-    const voteCounts = {
-      "Mohamed Abdullahi Farmaajo": 0,
-      "Hassan Sheikh Mohamud": 0,
-      "Hassan Ali Khaire": 0,
-      "Sharif Sheikh Ahmed": 0,
-      "Mohamed Hussein Roble": 0,
-      "Abdi Farah Shirdon": 0
-    };
-
-    const ids = {
-      "Mohamed Abdullahi Farmaajo": { count: "farmaajoCount", bar: "farmaajoProgress" },
-      "Hassan Sheikh Mohamud": { count: "hassanCount", bar: "hassanProgress" },
-      "Hassan Ali Khaire": { count: "khaireCount", bar: "khaireProgress" },
-      "Sharif Sheikh Ahmed": { count: "sharifCount", bar: "sharifProgress" },
-      "Mohamed Hussein Roble": { count: "robleCount", bar: "robleProgress" },
-      "Abdi Farah Shirdon": { count: "shirdonCount", bar: "shirdonProgress" }
-    };
-
-    onValue(voteRef, (snapshot) => {
-      // Reset counts first
-      for (let name in voteCounts) {
-        voteCounts[name] = 0;
-      }
-
-      const data = snapshot.val();
-      let totalVotes = 0;
-
-      if (data) {
-        Object.values(data).forEach(vote => {
-          const candidate = vote.candidate;
-          if (voteCounts.hasOwnProperty(candidate)) {
-            voteCounts[candidate]++;
-            totalVotes++;
-          }
-        });
-      }
-
-      // Update the DOM
-      for (let name in voteCounts) {
-        const count = voteCounts[name];
-        const percent = totalVotes === 0 ? 0 : (count / totalVotes) * 100;
-
-        const countElement = document.getElementById(ids[name].count);
-        const barElement = document.getElementById(ids[name].bar);
-
-        if (countElement) countElement.textContent = count;
-        if (barElement) barElement.style.width = percent + "%";
-      }
-    });
-  </script>
+  <!-- Firebase Modules -->
+  <script type="module" src="js/result.js"></script>
 </body>
 </html>
