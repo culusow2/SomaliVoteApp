@@ -1,117 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vote - Somali Election 2026</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vote - Somali Election 2026</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>🗳️ 2026 Somali Presidential Election</h1>
-        <p id="userInfo">
-            Welcome, <span id="displayName"></span><br>
-            Region: <span id="displayRegion"></span>, District: <span id="displayDistrict"></span>
-        </p>
+  <div class="container">
+    <h1>🗳️ 2026 Somali Presidential Election</h1>
+    <p id="userInfo">
+      Welcome, <span id="displayName"></span><br />
+      Region: <span id="displayRegion"></span>, District: <span id="displayDistrict"></span>
+    </p>
 
-        <div class="vote-section">
-            <h2>Cast Your Vote</h2>
-            <p>Select your preferred candidate:</p>
+    <div class="vote-section">
+      <h2>Cast Your Vote</h2>
+      <p>Select your preferred candidate:</p>
 
-            <div class="candidates-grid">
-                <div class="candidate-card" onclick="selectCandidate('Mohamed Abdullahi Farmaajo')">
-                    <img src="images/farmaajo.jpg" alt="Farmaajo" />
-                    <h3>Mohamed Abdullahi Farmaajo</h3>
-                    <p>Peace & Development Party</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Hassan Sheikh Mohamud')">
-                    <img src="images/hassan.jpg" alt="Hassan" />
-                    <h3>Hassan Sheikh Mohamud</h3>
-                    <p>Union for Peace Party</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Hassan Ali Khaire')">
-                    <img src="images/khaire.jpg" alt="Khaire" />
-                    <h3>Hassan Ali Khaire</h3>
-                    <p>National Unity Party</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Sharif Sheikh Ahmed')">
-                    <img src="images/sharif.jpg" alt="Sharif" />
-                    <h3>Sharif Sheikh Ahmed</h3>
-                    <p>Alliance for the Re-liberation of Somalia</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Mohamed Hussein Roble')">
-                    <img src="images/roble.jpg" alt="Roble" />
-                    <h3>Mohamed Hussein Roble</h3>
-                    <p>Progressive Leadership Party</p>
-                </div>
-                <div class="candidate-card" onclick="selectCandidate('Abdi Farah Shirdon')">
-                    <img src="images/shirdon.jpg" alt="Shirdon" />
-                    <h3>Abdi Farah Shirdon</h3>
-                    <p>Forward for Somalia Party</p>
-                </div>
-            </div>
-
-            <div id="confirmation" class="hidden">
-                <h3>Confirm Your Vote</h3>
-                <p>You selected: <strong id="selectedCandidateName"></strong></p>
-                <div class="confirmation-buttons">
-                    <button class="confirm-btn" onclick="submitVote()">Confirm Vote</button>
-                    <button class="cancel-btn" onclick="cancelVote()">Cancel</button>
-                </div>
-            </div>
+      <div class="candidates-grid">
+        <div class="candidate-card" onclick="selectCandidate('Mohamed Abdullahi Farmaajo')">
+          <img src="images/farmaajo.jpg" alt="Farmaajo" />
+          <h3>Mohamed Abdullahi Farmaajo</h3>
+          <p>Peace & Development Party</p>
         </div>
+        <div class="candidate-card" onclick="selectCandidate('Hassan Sheikh Mohamud')">
+          <img src="images/hassan.jpg" alt="Hassan" />
+          <h3>Hassan Sheikh Mohamud</h3>
+          <p>Union for Peace Party</p>
+        </div>
+        <div class="candidate-card" onclick="selectCandidate('Hassan Ali Khaire')">
+          <img src="images/khaire.jpg" alt="Khaire" />
+          <h3>Hassan Ali Khaire</h3>
+          <p>National Unity Party</p>
+        </div>
+        <div class="candidate-card" onclick="selectCandidate('Sharif Sheikh Ahmed')">
+          <img src="images/sharif.jpg" alt="Sharif" />
+          <h3>Sharif Sheikh Ahmed</h3>
+          <p>Alliance for the Re-liberation of Somalia</p>
+        </div>
+        <div class="candidate-card" onclick="selectCandidate('Mohamed Hussein Roble')">
+          <img src="images/roble.jpg" alt="Roble" />
+          <h3>Mohamed Hussein Roble</h3>
+          <p>Progressive Leadership Party</p>
+        </div>
+        <div class="candidate-card" onclick="selectCandidate('Abdi Farah Shirdon')">
+          <img src="images/shirdon.jpg" alt="Shirdon" />
+          <h3>Abdi Farah Shirdon</h3>
+          <p>Forward for Somalia Party</p>
+        </div>
+      </div>
+
+      <div id="confirmation" class="hidden">
+        <h3>Confirm Your Vote</h3>
+        <p>You selected: <strong id="selectedCandidateName"></strong></p>
+        <div class="confirmation-buttons">
+          <button class="confirm-btn" onclick="submitVote()">Confirm Vote</button>
+          <button class="cancel-btn" onclick="cancelVote()">Cancel</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="footer">
-        <p>Your vote is confidential and secure.</p>
-    </div>
+  <div class="footer">
+    <p>Your vote is confidential and secure.</p>
+  </div>
 
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-      import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-      import { firebaseConfig } from "./js/config.js";
+  <!-- ✅ Fixed JS: Expose functions globally -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+    import { firebaseConfig } from "./js/config.js";
 
-      const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-      // Display voter info from sessionStorage
-      document.getElementById("displayName").textContent = sessionStorage.getItem("voterName") || "Guest";
-      document.getElementById("displayRegion").textContent = sessionStorage.getItem("voterRegion") || "Unknown";
-      document.getElementById("displayDistrict").textContent = sessionStorage.getItem("voterDistrict") || "Unknown";
+    // Display voter info
+    document.getElementById("displayName").textContent = sessionStorage.getItem("voterName") || "Guest";
+    document.getElementById("displayRegion").textContent = sessionStorage.getItem("voterRegion") || "Unknown";
+    document.getElementById("displayDistrict").textContent = sessionStorage.getItem("voterDistrict") || "Unknown";
 
-      let selectedCandidate = "";
+    let selectedCandidate = "";
 
-      window.selectCandidate = function(name) {
-          selectedCandidate = name;
-          document.getElementById("selectedCandidateName").textContent = name;
-          document.getElementById("confirmation").classList.remove("hidden");
-      };
+    // ✅ Expose to global window so onclick works
+    window.selectCandidate = function(name) {
+      selectedCandidate = name;
+      document.getElementById("selectedCandidateName").textContent = name;
+      document.getElementById("confirmation").classList.remove("hidden");
+    };
 
-      window.cancelVote = function() {
-          selectedCandidate = "";
-          document.getElementById("confirmation").classList.add("hidden");
-      };
+    window.cancelVote = function () {
+      selectedCandidate = "";
+      document.getElementById("confirmation").classList.add("hidden");
+    };
 
-      window.submitVote = function() {
-          if (!selectedCandidate) {
-              alert("Please select a candidate first.");
-              return;
-          }
+    window.submitVote = function () {
+      if (!selectedCandidate) {
+        alert("Please select a candidate first.");
+        return;
+      }
 
-          const voteRef = push(ref(db, "votes"));
-          set(voteRef, {
-              candidate: selectedCandidate,
-              voter: sessionStorage.getItem("voterName"),
-              region: sessionStorage.getItem("voterRegion"),
-              district: sessionStorage.getItem("voterDistrict"),
-              timestamp: Date.now()
-          }).then(() => {
-              alert("✅ Your vote has been successfully recorded!");
-              window.location.href = "results.html";
-          }).catch((error) => {
-              alert("❌ Error submitting vote: " + error.message);
-          });
-      };
-    </script>
+      const voteRef = push(ref(db, "votes"));
+      set(voteRef, {
+        candidate: selectedCandidate,
+        voter: sessionStorage.getItem("voterName"),
+        region: sessionStorage.getItem("voterRegion"),
+        district: sessionStorage.getItem("voterDistrict"),
+        timestamp: Date.now()
+      }).then(() => {
+        alert("✅ Your vote has been successfully recorded!");
+        window.location.href = "results.html";
+      }).catch((error) => {
+        alert("❌ Error submitting vote: " + error.message);
+      });
+    };
+  </script>
 </body>
 </html>
